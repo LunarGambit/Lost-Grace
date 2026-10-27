@@ -11,7 +11,7 @@ const canvas=document.getElementById('game'),g=canvas.getContext('2d'),W=canvas.
 let active=false,paused=false,last=0,time=0,spawnClock=0,bossClock=0,attackClock=0,shake=0,kills=0,level=1,xp=0,xpNeed=5,day=1,damageFlash=0;
 let player,foes=[],orbs=[],shots=[],fx=[],keys={},worldSeed=918273,noticeTimer=0;
 const upgrades=[['VIGOR','+25 maximum health, restore 25 life',p=>{p.maxHp+=25;p.hp=Math.min(p.maxHp,p.hp+25)}],['IRON HIDE','+1 defense; incoming hits hurt less',p=>p.def+=1],['MIGHT','+4 attack damage',p=>p.atk+=4],['TRUE STRIKE','+5% critical chance',p=>p.crit=Math.min(.75,p.crit+.05)],['QUICK HAND','+15% attack speed',p=>p.rate=Math.min(3.5,p.rate*1.15)]];
-const kinds={wolf:{name:'WOLF',hp:10,speed:25,damage:7,xp:1,r:5,color:'#a8a18b',shape:'wolf'},bear:{name:'BEAR',hp:38,speed:12,damage:16,xp:3,r:9,color:'#956342',shape:'bear'},raider:{name:'RAIDER',hp:20,speed:17,damage:10,xp:2,r:6,color:'#b27048',shape:'raider'},giant:{name:'GIANT',hp:260,speed:8,damage:26,xp:18,r:16,color:'#9a7359',shape:'giant',boss:true},cyclops:{name:'CYCLOPS',hp:390,speed:10,damage:22,xp:24,r:17,color:'#7d9b68',shape:'cyclops',boss:true},nephilim:{name:'NEPHILIM',hp:510,speed:13,damage:28,xp:32,r:18,color:'#a07b9c',shape:'nephilim',boss:true},titan:{name:'TITAN',hp:900,speed:8,damage:34,xp:50,r:23,color:'#ba6d55',shape:'titan',boss:true}};
+const kinds={wolf:{name:'WOLF',hp:10,speed:25,damage:7,xp:1,r:5,color:'#a8a18b',shape:'wolf'},bear:{name:'BEAR',hp:38,speed:12,damage:16,xp:3,r:9,color:'#956342',shape:'bear'},raider:{name:'SAVAGE',hp:20,speed:17,damage:10,xp:2,r:6,color:'#b27048',shape:'raider'},giant:{name:'GIANT',hp:260,speed:8,damage:26,xp:18,r:16,color:'#9a7359',shape:'giant',boss:true},cyclops:{name:'CYCLOPS',hp:390,speed:10,damage:22,xp:24,r:17,color:'#7d9b68',shape:'cyclops',boss:true},nephilim:{name:'NEPHILIM',hp:510,speed:13,damage:28,xp:32,r:18,color:'#a07b9c',shape:'nephilim',boss:true},titan:{name:'TITAN',hp:900,speed:8,damage:34,xp:50,r:23,color:'#ba6d55',shape:'titan',boss:true}};
 function reset(){time=0;spawnClock=.4;bossClock=48;attackClock=0;shake=0;kills=0;level=1;xp=0;xpNeed=5;day=1;foes=[];orbs=[];shots=[];fx=[];player={x:0,y:0,hp:100,maxHp:100,def:0,atk:12,crit:.08,rate:1,range:118,speed:31,hitCd:0,face:0};active=true;paused=false;ui('bosswarn').style.display='none';ui('overlay').classList.add('hidden');last=performance.now();requestAnimationFrame(loop)}
 ui('start').onclick=reset;
 window.addEventListener('keydown',e=>{let k=e.key.toLowerCase();keys[k]=true;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();});window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
@@ -115,13 +115,127 @@ function drawEnemy(e,x,y){
   g.fillStyle='#ead0a0';g.fillRect(x+12,y+1,2,1);
   break;
  }
- case'raider':
-  g.fillRect(x-4,y-4,8,10);g.fillRect(x-3,y-8,6,5);g.fillStyle='#d5b77c';g.fillRect(x-4,y-9,8,2);g.fillStyle='#463b2b';g.fillRect(x-3,y+5,2,3);g.fillRect(x+2,y+5,2,3);g.fillStyle='#ae9871';g.fillRect(x+5,y-3,1,8);g.fillRect(x+4,y-4,3,2);break;
- default:
-  g.fillRect(x-e.r,y-e.r+3,w,w-3);g.fillRect(x-e.r+2,y-e.r,w-4,5);g.fillStyle='#322a25';g.fillRect(x-2,y-e.r+3,4,3);
-  if(e.kind==='cyclops'){g.fillStyle='#f4dc72';g.fillRect(x-2,y-e.r+4,4,3)}
-  if(e.kind==='nephilim'){g.fillStyle='#cfb5ce';g.fillRect(x-e.r-3,y-2,3,6);g.fillRect(x+e.r,y-2,3,6)}
+
+ case'raider':{
+  // Primitive spear hunter in a rough hide wrap, with shaggy hair and beard.
+  g.fillStyle='#151812';g.fillRect(x-8,y+10,32,3);
+  // Flint spear, lashed to a long crooked wooden shaft.
+  g.fillStyle='#4a3526';
+  g.fillRect(x+3,y+1,4,2);g.fillRect(x+6,y-2,4,2);g.fillRect(x+9,y-5,4,2);
+  g.fillRect(x+12,y-8,4,2);g.fillRect(x+15,y-11,4,2);g.fillRect(x+18,y-14,4,2);
+  g.fillStyle='#847968';g.fillRect(x+21,y-18,3,8);g.fillRect(x+20,y-16,5,4);g.fillStyle='#c5b9a0';g.fillRect(x+22,y-19,2,3);
+  g.fillStyle='#765039';g.fillRect(x+10,y-10,2,6);g.fillRect(x+12,y-9,2,3);
+  // Legs, torso, arms, and rough animal-hide kilt.
+  g.fillStyle='#4a3529';g.fillRect(x-3,y+2,4,8);g.fillRect(x+3,y+2,4,8);g.fillRect(x-5,y+9,7,2);g.fillRect(x+2,y+9,7,2);
+  g.fillStyle='#9a6544';g.fillRect(x-4,y-4,12,10);g.fillRect(x+3,y-6,6,5);
+  g.fillStyle='#c18457';g.fillRect(x-2,y-3,7,5);g.fillRect(x+4,y-4,4,3);
+  g.fillStyle='#65432e';g.fillRect(x-5,y+3,14,6);g.fillRect(x-6,y+4,3,3);g.fillRect(x+7,y+4,3,4);
+  g.fillStyle='#b08a5d';g.fillRect(x-5,y+4,3,2);g.fillRect(x,y+5,3,2);g.fillRect(x+5,y+4,3,2);
+  g.fillStyle='#d1b77d';g.fillRect(x-4,y+2,10,1);g.fillRect(x-1,y+1,3,2);
+  // Head, tangled hair, heavy brow, and beard.
+  g.fillStyle='#332820';g.fillRect(x-3,y-13,10,8);g.fillRect(x-5,y-11,4,5);g.fillRect(x-2,y-16,4,4);g.fillRect(x+2,y-15,5,4);
+  g.fillStyle='#b77b53';g.fillRect(x-1,y-12,8,6);g.fillRect(x+5,y-10,4,3);
+  g.fillStyle='#453027';g.fillRect(x-2,y-7,7,5);g.fillRect(x-1,y-3,5,3);g.fillRect(x-4,y-11,3,3);
+  g.fillStyle='#e0b37b';g.fillRect(x+3,y-11,2,2);g.fillStyle='#241c18';g.fillRect(x+6,y-10,2,1);
+  g.fillStyle='#d8c99a';g.fillRect(x-4,y-1,2,2);g.fillRect(x+6,y-1,2,2);
+  break;
+ }
+ case'giant':{
+  // A towering, scarred brute with a fur mantle and heavy hide belt.
+  g.fillStyle='#151812';g.fillRect(x-19,y+16,39,4);
+  g.fillStyle='#44352f';g.fillRect(x-15,y-12,30,27);g.fillRect(x-12,y-20,23,12);
+  g.fillRect(x-19,y-10,8,18);g.fillRect(x+11,y-9,9,18);
+  g.fillRect(x-13,y+11,9,10);g.fillRect(x+5,y+11,9,10);
+  g.fillStyle='#9a7359';g.fillRect(x-12,y-10,24,21);g.fillRect(x-9,y-18,17,10);
+  g.fillRect(x-18,y-8,6,14);g.fillRect(x+12,y-7,6,14);
+  g.fillStyle='#bd9070';g.fillRect(x-8,y-8,7,6);g.fillRect(x+3,y-8,7,6);
+  g.fillRect(x-6,y-2,12,9);g.fillRect(x-16,y-5,4,8);g.fillRect(x+13,y-4,4,8);
+  g.fillStyle='#6b4e43';g.fillRect(x-7,y-18,13,4);g.fillRect(x-10,y-14,19,3);
+  g.fillStyle='#382c28';g.fillRect(x-4,y-13,3,2);g.fillRect(x+4,y-13,3,2);g.fillRect(x-2,y-8,5,2);
+  g.fillStyle='#d0a27b';g.fillRect(x-3,y-4,2,7);g.fillRect(x+4,y-3,2,5);
+  g.fillStyle='#554035';g.fillRect(x-12,y+6,24,8);g.fillRect(x-9,y+12,5,8);g.fillRect(x+4,y+12,5,8);
+  g.fillStyle='#b18362';g.fillRect(x-10,y+16,6,3);g.fillRect(x+4,y+16,6,3);
+  g.fillStyle='#d2b87f';g.fillRect(x-3,y+8,6,3);g.fillRect(x-1,y+9,2,2);
+  // Battle scars.
+  g.fillStyle='#704d45';g.fillRect(x-7,y-1,4,1);g.fillRect(x+5,y+3,3,1);g.fillRect(x-2,y+4,1,3);
+  break;
+ }
+ case'cyclops':{
+  // Broad green cyclops with one luminous eye and a knotted timber club.
+  g.fillStyle='#151812';g.fillRect(x-17,y+17,37,4);
+  g.fillStyle='#44352d';g.fillRect(x-13,y-11,27,26);g.fillRect(x-10,y-19,21,12);
+  g.fillRect(x+10,y-7,9,18);g.fillRect(x-11,y+11,9,10);g.fillRect(x+4,y+11,9,10);
+  g.fillStyle='#78945c';g.fillRect(x-10,y-10,21,20);g.fillRect(x-8,y-17,17,9);
+  g.fillRect(x+11,y-5,6,12);g.fillStyle='#9eb577';g.fillRect(x-7,y-8,6,6);g.fillRect(x-8,y+3,5,4);
+  // Single eye and coarse tusked mouth.
+  g.fillStyle='#d4be73';g.fillRect(x-3,y-14,8,5);g.fillStyle='#ecdb8b';g.fillRect(x-2,y-13,6,3);
+  g.fillStyle='#432b20';g.fillRect(x,y-13,2,3);g.fillStyle='#171613';g.fillRect(x,y-13,1,3);
+  g.fillStyle='#49352b';g.fillRect(x-4,y-5,10,4);g.fillStyle='#dfd2b3';g.fillRect(x-3,y-4,2,2);g.fillRect(x+3,y-4,2,2);
+  // Hide kilt, leather belt, and club.
+  g.fillStyle='#593c2d';g.fillRect(x-11,y+7,22,8);g.fillStyle='#b28b53';g.fillRect(x-4,y+7,8,2);
+  g.fillStyle='#574331';g.fillRect(x+16,y-9,4,22);g.fillStyle='#77583d';g.fillRect(x+13,y-14,10,7);g.fillRect(x+15,y-17,6,4);
+  g.fillStyle='#a58b5e';g.fillRect(x+15,y-12,2,3);g.fillRect(x+20,y-8,2,15);
+  break;
+ }
+ case'nephilim':{
+  // Fallen angel in dark armor, with ragged feathered wings and a broken halo.
+  g.fillStyle='#151812';g.fillRect(x-19,y+18,39,4);
+  g.fillStyle='#433543';g.fillRect(x-13,y-10,26,25);g.fillRect(x-9,y-19,18,11);
+  // Wings spread behind the body.
+  g.fillStyle='#453b50';g.fillRect(x-24,y-12,11,18);g.fillRect(x+13,y-12,11,18);
+  g.fillRect(x-28,y-18,8,8);g.fillRect(x+20,y-18,8,8);g.fillRect(x-31,y-23,7,6);g.fillRect(x+24,y-23,7,6);
+  g.fillStyle='#9c8aa0';g.fillRect(x-28,y-19,3,7);g.fillRect(x-25,y-13,3,9);g.fillRect(x-22,y-8,3,9);
+  g.fillRect(x+25,y-19,3,7);g.fillRect(x+22,y-13,3,9);g.fillRect(x+19,y-8,3,9);
+  g.fillStyle='#d5c7d1';g.fillRect(x-29,y-23,5,2);g.fillRect(x-27,y-20,4,2);g.fillRect(x-24,y-16,4,2);
+  g.fillRect(x+24,y-23,5,2);g.fillRect(x+23,y-20,4,2);g.fillRect(x+20,y-16,4,2);
+  // Broken halo, mask, breastplate, and long dark robe.
+  g.fillStyle='#d3b765';g.fillRect(x-6,y-26,4,2);g.fillRect(x-2,y-28,6,2);g.fillRect(x+5,y-26,3,2);
+  g.fillStyle='#bb9eac';g.fillRect(x-6,y-17,12,7);g.fillStyle='#362b37';g.fillRect(x-4,y-15,8,3);
+  g.fillStyle='#d8c6d7';g.fillRect(x-1,y-14,2,2);g.fillStyle='#dd5c6a';g.fillRect(x-1,y-14,1,1);
+  g.fillStyle='#80647d';g.fillRect(x-9,y-8,18,11);g.fillStyle='#c0a985';g.fillRect(x-4,y-8,8,8);
+  g.fillStyle='#4b394b';g.fillRect(x-11,y+2,22,13);g.fillStyle='#968090';g.fillRect(x-5,y+4,10,2);
+  g.fillStyle='#392d39';g.fillRect(x-9,y+13,6,7);g.fillRect(x+3,y+13,6,7);
+  // Black iron blade at the side.
+  g.fillStyle='#514554';g.fillRect(x+14,y-6,2,24);g.fillStyle='#d4c5c8';g.fillRect(x+15,y-9,2,6);g.fillStyle='#c2a864';g.fillRect(x+11,y+1,8,2);
+  break;
+ }
+ case'titan':{
+  // Cronos-inspired elder king: laurel crown, silver beard, bronze chiton, purple mantle, and sickle.
+  g.fillStyle='#151812';g.fillRect(x-25,y+23,51,4);
+  // Crescent sickle and long haft.
+  g.fillStyle='#594234';g.fillRect(x+14,y-4,3,24);g.fillRect(x+13,y+1,5,2);
+  g.fillStyle='#b99b55';g.fillRect(x+15,y-17,3,14);g.fillRect(x+17,y-20,4,4);g.fillRect(x+20,y-23,4,4);g.fillRect(x+23,y-21,4,3);g.fillRect(x+25,y-18,3,3);
+  g.fillStyle='#e2cb82';g.fillRect(x+18,y-20,4,2);g.fillRect(x+22,y-22,4,2);
+  // Purple mantle and broad elder's silhouette.
+  g.fillStyle='#352a43';g.fillRect(x-17,y-14,34,31);g.fillRect(x-20,y-10,8,24);g.fillRect(x+12,y-9,8,22);
+  g.fillStyle='#59435f';g.fillRect(x-15,y-13,7,22);g.fillRect(x+11,y-8,6,18);
+  g.fillStyle='#a77c49';g.fillRect(x-13,y-15,26,27);g.fillStyle='#c49a5b';g.fillRect(x-10,y-13,20,22);
+  // Head, flowing silver hair and beard.
+  g.fillStyle='#3a3035';g.fillRect(x-10,y-25,20,15);g.fillRect(x-12,y-20,4,10);g.fillRect(x+8,y-20,4,10);
+  g.fillStyle='#d3ced0';g.fillRect(x-8,y-23,16,11);g.fillRect(x-10,y-20,3,10);g.fillRect(x+7,y-20,3,10);
+  g.fillStyle='#f0e7d9';g.fillRect(x-5,y-11,10,10);g.fillRect(x-4,y-3,8,5);g.fillRect(x-2,y+2,4,3);
+  g.fillStyle='#9894a1';g.fillRect(x-7,y-20,3,8);g.fillRect(x+5,y-20,3,8);g.fillRect(x-3,y-8,6,7);
+  // Laurel leaves arc over the brow.
+  g.fillStyle='#916d34';g.fillRect(x-10,y-26,20,3);g.fillStyle='#d1ae59';
+  g.fillRect(x-11,y-26,3,3);g.fillRect(x-8,y-28,3,3);g.fillRect(x-4,y-29,3,3);
+  g.fillRect(x+1,y-29,3,3);g.fillRect(x+5,y-28,3,3);g.fillRect(x+8,y-26,3,3);
+  // Bronze cuirass, Greek-patterned hem, and belt.
+  g.fillStyle='#80593d';g.fillRect(x-8,y-10,16,15);g.fillStyle='#d0aa64';g.fillRect(x-6,y-9,12,9);
+  g.fillStyle='#e5c77c';g.fillRect(x-2,y-8,4,8);g.fillRect(x-6,y-2,3,2);g.fillRect(x+3,y-2,3,2);
+  g.fillStyle='#5d3e50';g.fillRect(x-12,y+7,24,9);g.fillStyle='#d0aa64';g.fillRect(x-12,y+7,24,2);
+  g.fillStyle='#e0c477';g.fillRect(x-9,y+10,3,2);g.fillRect(x-3,y+10,3,2);g.fillRect(x+3,y+10,3,2);g.fillRect(x+9,y+10,3,2);
+  g.fillStyle='#c49a5b';g.fillRect(x-11,y+17,7,5);g.fillRect(x+4,y+17,7,5);
+  // Calm, glowing eyes beneath heavy brows.
+  g.fillStyle='#49343a';g.fillRect(x-6,y-17,4,2);g.fillRect(x+2,y-17,4,2);
+  g.fillStyle='#e7c56c';g.fillRect(x-5,y-16,2,1);g.fillRect(x+3,y-16,2,1);
+  g.fillStyle='#433238';g.fillRect(x-1,y-13,2,2);
+  break;
+ }
+ default:{
+  g.fillRect(x-e.r,y-e.r+3,w,w-3);g.fillRect(x-e.r+2,y-e.r,w-4,5);
+  g.fillStyle='#322a25';g.fillRect(x-2,y-e.r+3,4,3);
   g.fillStyle='#3c322b';g.fillRect(x-e.r+2,y+e.r-1,4,4);g.fillRect(x+e.r-5,y+e.r-1,4,4);
+ }
  }
  if(e.boss){let bw=24,ratio=Math.max(0,e.hp/e.maxHp);g.fillStyle='#251c18';g.fillRect(x-bw/2,y-e.r-7,bw,3);g.fillStyle='#d66550';g.fillRect(x-bw/2,y-e.r-7,bw*ratio,3);g.fillStyle='#f2e2b7';g.font='5px monospace';g.textAlign='center';g.fillText(e.kind.toUpperCase(),x,y-e.r-9)}
 }
