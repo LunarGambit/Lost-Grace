@@ -36,10 +36,31 @@ function clock(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Mat
 function sync(){ui('health').textContent=Math.max(0,Math.ceil(player.hp))+' / '+player.maxHp;ui('healthbar').style.width=Math.max(0,player.hp/player.maxHp*100)+'%';ui('clock').textContent=clock(time);ui('day').textContent=day;ui('level').textContent=level;ui('xp').textContent=xp+' / '+xpNeed;ui('kills').textContent=kills;ui('xpbar').style.width=(xp/xpNeed*100)+'%'}
 function screen(x,y){return [Math.round(x-player.x+W/2),Math.round(y-player.y+H/2)]}
 function draw(){g.save();let jx=shake?(rand()-.5)*shake:0,jy=shake?(rand()-.5)*shake:0;shake*=.85;g.translate(jx,jy);g.fillStyle='#263725';g.fillRect(0,0,W,H);
-// Seamless procedural wilderness that scrolls forever in every direction.
-let ox=player.x-W/2,oy=player.y-H/2,tx=Math.floor(ox/16),ty=Math.floor(oy/16);for(let y=ty;y<ty+19;y++)for(let x=tx;x<tx+32;x++){let sx=x*16-ox,sy=y*16-oy,h=hash(x,y);g.fillStyle=h>.84?'#35452d':h<.1?'#203425':'#2b3b29';g.fillRect(Math.floor(sx),Math.floor(sy),16,16);if(h>.88){g.fillStyle='#78804a';g.fillRect(sx+4,sy+7,2,3);g.fillRect(sx+9,sy+3,2,2)}else if(h<.06){g.fillStyle='#535244';g.fillRect(sx+5,sy+6,5,3);g.fillStyle='#686551';g.fillRect(sx+6,sy+5,3,2)}}
-// Ground cracks and old footpaths lend the landscape an ancient hand-painted feel.
-for(let i=-4;i<8;i++){let xx=((Math.floor(player.x/80)*80+i*80)-player.x+W/2),yy=(hash(i,Math.floor(player.y/80))*H);if(hash(i,4)>.45){g.fillStyle='#343a29';g.fillRect(xx,yy,8,1);g.fillRect(xx+7,yy,1,4)}}
+// Seamless, rolling grass bands with upright pixel blades across the endless world.
+let ox=player.x-W/2,oy=player.y-H/2,cell=12,tx=Math.floor(ox/cell),ty=Math.floor(oy/cell);
+const groundColors=['#2d642c','#397a2e','#478a31','#569a34','#65aa38','#72b63b'];
+const bladeColors=['#3e7e30','#559b34','#70b63b','#91cd48','#b2df62'];
+for(let y=ty;y<ty+Math.ceil(H/cell)+2;y++)for(let x=tx;x<tx+Math.ceil(W/cell)+2;x++){
+ let sx=Math.floor(x*cell-ox),sy=Math.floor(y*cell-oy);
+ let wx=x*cell,wy=y*cell;
+ let ridge=Math.sin(wy*.105+Math.sin(wx*.018)*1.15)+Math.sin((wy+wx*.13)*.035)*.28;
+ let tone=ridge>.95?5:ridge>.35?4:ridge>-.2?3:ridge>-.8?2:ridge>-1.25?1:0;
+ g.fillStyle=groundColors[tone];g.fillRect(sx,sy,cell,cell);
+ let seed=hash(x,y);
+ // Small color flecks soften the broad grassy bands without adding a tile grid.
+ if(seed>.73){g.fillStyle=groundColors[Math.max(0,tone-1)];g.fillRect(sx+Math.floor(seed*9)%cell,sy+Math.floor(seed*31)%cell,2,2)}
+ let blades=3+Math.floor(hash(x*7+13,y*11+29)*4);
+ for(let i=0;i<blades;i++){
+  let bx=sx+Math.floor(hash(x*17+i*5,y*23+3)*cell);
+  let h=3+Math.floor(hash(x*31+i*7,y*19+11)*7);
+  let by=sy+Math.floor(hash(x*13+i*3,y*29+5)*(cell-h+1));
+  let shade=hash(x*37+i*11,y*41+7);
+  let colorIndex=shade>.94?4:shade>.69?3:shade>.35?2:(tone>2?1:0);
+  g.fillStyle=bladeColors[colorIndex];g.fillRect(bx,by,1,h);
+  if(h>6&&shade>.58){g.fillStyle=bladeColors[Math.min(4,colorIndex+1)];g.fillRect(bx+1,by+1,1,h-3)}
+ }
+ if(seed<.018){g.fillStyle='#315d2d';g.fillRect(sx+4,sy+5,2,2)}
+}
 for(let o of orbs){let [x,y]=screen(o.x,o.y),pulse=Math.sin(o.phase)*1;g.fillStyle='#867239';g.fillRect(x-3,y-3+pulse,6,6);g.fillStyle='#f2d675';g.fillRect(x-1,y-2+pulse,3,3)}
 for(let s of shots){let [x,y]=screen(s.x,s.y);g.fillStyle=s.crit?'#fff18b':'#eee0b0';g.fillRect(x-1,y-1,3,3)}
 for(let e of foes){let [x,y]=screen(e.x,e.y);drawEnemy(e,x,y)}
