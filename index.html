@@ -36,24 +36,8 @@ function clock(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Mat
 function sync(){ui('health').textContent=Math.max(0,Math.ceil(player.hp))+' / '+player.maxHp;ui('healthbar').style.width=Math.max(0,player.hp/player.maxHp*100)+'%';ui('clock').textContent=clock(time);ui('day').textContent=day;ui('level').textContent=level;ui('xp').textContent=xp+' / '+xpNeed;ui('kills').textContent=kills;ui('xpbar').style.width=(xp/xpNeed*100)+'%'}
 function screen(x,y){return [Math.round(x-player.x+W/2),Math.round(y-player.y+H/2)]}
 function draw(){g.save();let jx=shake?(rand()-.5)*shake:0,jy=shake?(rand()-.5)*shake:0;shake*=.85;g.translate(jx,jy);g.fillStyle='#263725';g.fillRect(0,0,W,H);
-// One dark-green endless ground, textured only with lighter upright grass blades.
-let ox=player.x-W/2,oy=player.y-H/2,cell=12,tx=Math.floor(ox/cell),ty=Math.floor(oy/cell);
-const groundColor='#28552b';
-const bladeColors=['#559339','#70ad42','#91c552','#b0d968'];
-for(let y=ty;y<ty+Math.ceil(H/cell)+2;y++)for(let x=tx;x<tx+Math.ceil(W/cell)+2;x++){
- let sx=Math.floor(x*cell-ox),sy=Math.floor(y*cell-oy);
- g.fillStyle=groundColor;g.fillRect(sx,sy,cell,cell);
- let blades=3+Math.floor(hash(x*7+13,y*11+29)*4);
- for(let i=0;i<blades;i++){
-  let bx=sx+Math.floor(hash(x*17+i*5,y*23+3)*cell);
-  let h=3+Math.floor(hash(x*31+i*7,y*19+11)*7);
-  let by=sy+Math.floor(hash(x*13+i*3,y*29+5)*(cell-h+1));
-  let shade=hash(x*37+i*11,y*41+7);
-  let colorIndex=shade>.9?3:shade>.62?2:1;
-  g.fillStyle=bladeColors[colorIndex];g.fillRect(bx,by,1,h);
-  if(h>6&&shade>.58){g.fillStyle=bladeColors[Math.min(3,colorIndex+1)];g.fillRect(bx+1,by+1,1,h-3)}
- }
-}
+// A single uninterrupted dark-green ground.
+g.fillStyle='#28552b';g.fillRect(0,0,W,H);
 for(let o of orbs){let [x,y]=screen(o.x,o.y),pulse=Math.sin(o.phase)*1;g.fillStyle='#867239';g.fillRect(x-3,y-3+pulse,6,6);g.fillStyle='#f2d675';g.fillRect(x-1,y-2+pulse,3,3)}
 for(let s of shots){let [x,y]=screen(s.x,s.y);g.fillStyle=s.crit?'#fff18b':'#eee0b0';g.fillRect(x-1,y-1,3,3)}
 for(let e of foes){let [x,y]=screen(e.x,e.y);drawEnemy(e,x,y)}
@@ -61,12 +45,57 @@ for(let f of fx){let [x,y]=screen(f.x,f.y);g.globalAlpha=Math.max(0,f.life*2);g.
 drawPlayer();g.restore();if(damageFlash){g.fillStyle='rgba(189,55,34,'+(damageFlash*1.2)+')';g.fillRect(0,0,W,H)}
 }
 function drawPlayer(){let x=W/2,y=H/2;g.fillStyle='#151812';g.fillRect(x-4,y+3,9,3);g.fillStyle='#c7a56c';g.fillRect(x-4,y-6,8,10);g.fillStyle='#aa8250';g.fillRect(x-3,y-9,6,5);g.fillStyle='#e4cf9c';g.fillRect(x-3,y-4,6,4);g.fillStyle='#3d3024';g.fillRect(x-5,y-9,10,2);g.fillStyle='#4c4932';g.fillRect(x-3,y+4,3,3);g.fillRect(x+1,y+4,3,3);let dx=Math.cos(player.face),dy=Math.sin(player.face);g.fillStyle='#d6d0ad';g.fillRect(Math.round(x+dx*7)-1,Math.round(y+dy*7)-1,3,3);if(damageFlash){g.fillStyle='#fff';g.fillRect(x-5,y-11,10,1)}}
-function drawEnemy(e,x,y){let w=e.r*2;g.fillStyle='#151812';g.fillRect(x-e.r,y+e.r-1,w,3);g.fillStyle=e.color;
-switch(e.kind){case'wolf':g.fillRect(x-5,y-3,9,6);g.fillRect(x+3,y-5,4,5);g.fillRect(x+5,y-7,2,3);g.fillRect(x-7,y-1,3,2);g.fillStyle='#e1cc9a';g.fillRect(x+5,y-4,1,1);g.fillRect(x-3,y+2,2,3);g.fillRect(x+2,y+2,2,3);break;
-case'bear':g.fillRect(x-7,y-5,14,10);g.fillRect(x+4,y-7,6,7);g.fillRect(x+5,y-9,3,3);g.fillStyle='#443322';g.fillRect(x+8,y-4,1,1);g.fillRect(x-5,y+4,3,3);g.fillRect(x+3,y+4,3,3);break;
-case'raider':g.fillRect(x-4,y-4,8,10);g.fillRect(x-3,y-8,6,5);g.fillStyle='#d5b77c';g.fillRect(x-4,y-9,8,2);g.fillStyle='#463b2b';g.fillRect(x-3,y+5,2,3);g.fillRect(x+2,y+5,2,3);g.fillStyle='#ae9871';g.fillRect(x+5,y-3,1,8);g.fillRect(x+4,y-4,3,2);break;
-default:g.fillRect(x-e.r,y-e.r+3,w,w-3);g.fillRect(x-e.r+2,y-e.r,w-4,5);g.fillStyle='#322a25';g.fillRect(x-2,y-e.r+3,4,3);if(e.kind==='cyclops'){g.fillStyle='#f4dc72';g.fillRect(x-2,y-e.r+4,4,3)}if(e.kind==='nephilim'){g.fillStyle='#cfb5ce';g.fillRect(x-e.r-3,y-2,3,6);g.fillRect(x+e.r,y-2,3,6)}g.fillStyle='#3c322b';g.fillRect(x-e.r+2,y+e.r-1,4,4);g.fillRect(x+e.r-5,y+e.r-1,4,4);}
-if(e.boss){let bw=24,ratio=Math.max(0,e.hp/e.maxHp);g.fillStyle='#251c18';g.fillRect(x-bw/2,y-e.r-7,bw,3);g.fillStyle='#d66550';g.fillRect(x-bw/2,y-e.r-7,bw*ratio,3);g.fillStyle='#f2e2b7';g.font='5px monospace';g.textAlign='center';g.fillText(e.kind.toUpperCase(),x,y-e.r-9)} }
+function drawEnemy(e,x,y){
+ let w=e.r*2;
+ g.fillStyle='#151812';g.fillRect(x-e.r,y+e.r-1,w,3);
+ g.fillStyle=e.color;
+ switch(e.kind){
+ case'wolf':{
+  // Layered silhouette, bushy tail, pointed ears, muzzle, eye, and separate paws.
+  g.fillStyle='#151812';g.fillRect(x-13,y+6,27,3);
+  g.fillStyle='#4e5046';
+  g.fillRect(x-9,y-5,17,10);g.fillRect(x+3,y-9,10,9);g.fillRect(x+10,y-6,7,5);
+  g.fillRect(x+4,y-13,4,6);g.fillRect(x+10,y-13,4,6);
+  g.fillRect(x-14,y-6,6,4);g.fillRect(x-16,y-8,4,4);
+  g.fillRect(x-7,y+3,4,6);g.fillRect(x+1,y+3,4,6);g.fillRect(x+8,y-1,3,6);
+  g.fillStyle='#777968';g.fillRect(x-8,y-4,13,7);g.fillRect(x+4,y-8,7,6);
+  g.fillRect(x-13,y-6,4,2);g.fillRect(x-15,y-8,2,2);
+  g.fillStyle='#a6a38b';g.fillRect(x-5,y-4,9,3);g.fillRect(x+5,y-7,5,4);
+  g.fillRect(x+11,y-5,4,2);
+  g.fillStyle='#c8bea0';g.fillRect(x-2,y+1,8,2);g.fillRect(x+10,y-3,5,2);
+  g.fillStyle='#4e5046';g.fillRect(x-6,y+5,3,4);g.fillRect(x+2,y+5,3,4);g.fillRect(x+9,y+3,3,3);
+  g.fillStyle='#d4a844';g.fillRect(x+8,y-7,2,2);
+  g.fillStyle='#2e2920';g.fillRect(x+15,y-6,2,2);
+  g.fillStyle='#d8ceae';g.fillRect(x+12,y-2,2,1);
+  break;
+ }
+ case'bear':{
+  // Broad shoulders, rounded ears, layered coat, heavy paws, and a visible muzzle.
+  g.fillStyle='#151812';g.fillRect(x-14,y+9,29,3);
+  g.fillStyle='#4b3024';
+  g.fillRect(x-12,y-8,22,18);g.fillRect(x+1,y-12,13,15);g.fillRect(x+9,y-7,8,8);
+  g.fillRect(x+2,y-15,5,5);g.fillRect(x+10,y-15,5,5);
+  g.fillRect(x-10,y+6,6,6);g.fillRect(x+1,y+6,6,6);g.fillRect(x+9,y+4,5,7);
+  g.fillStyle='#956342';g.fillRect(x-10,y-7,18,14);g.fillRect(x+3,y-10,9,11);
+  g.fillRect(x+10,y-5,5,5);g.fillRect(x-9,y+5,4,4);g.fillRect(x+2,y+5,4,4);
+  g.fillStyle='#b47b4a';g.fillRect(x-7,y-8,9,3);g.fillRect(x-11,y-3,5,8);
+  g.fillRect(x+4,y-11,6,5);g.fillRect(x+11,y-4,4,3);
+  g.fillStyle='#d0a06a';g.fillRect(x-5,y+2,11,4);g.fillRect(x+11,y-1,5,4);
+  g.fillStyle='#6d462f';g.fillRect(x+4,y-7,3,2);g.fillRect(x-5,y+8,4,3);g.fillRect(x+3,y+8,4,3);
+  g.fillStyle='#282019';g.fillRect(x+9,y-8,2,2);g.fillRect(x+15,y-5,2,2);
+  g.fillStyle='#ead0a0';g.fillRect(x+12,y+1,2,1);
+  break;
+ }
+ case'raider':
+  g.fillRect(x-4,y-4,8,10);g.fillRect(x-3,y-8,6,5);g.fillStyle='#d5b77c';g.fillRect(x-4,y-9,8,2);g.fillStyle='#463b2b';g.fillRect(x-3,y+5,2,3);g.fillRect(x+2,y+5,2,3);g.fillStyle='#ae9871';g.fillRect(x+5,y-3,1,8);g.fillRect(x+4,y-4,3,2);break;
+ default:
+  g.fillRect(x-e.r,y-e.r+3,w,w-3);g.fillRect(x-e.r+2,y-e.r,w-4,5);g.fillStyle='#322a25';g.fillRect(x-2,y-e.r+3,4,3);
+  if(e.kind==='cyclops'){g.fillStyle='#f4dc72';g.fillRect(x-2,y-e.r+4,4,3)}
+  if(e.kind==='nephilim'){g.fillStyle='#cfb5ce';g.fillRect(x-e.r-3,y-2,3,6);g.fillRect(x+e.r,y-2,3,6)}
+  g.fillStyle='#3c322b';g.fillRect(x-e.r+2,y+e.r-1,4,4);g.fillRect(x+e.r-5,y+e.r-1,4,4);
+ }
+ if(e.boss){let bw=24,ratio=Math.max(0,e.hp/e.maxHp);g.fillStyle='#251c18';g.fillRect(x-bw/2,y-e.r-7,bw,3);g.fillStyle='#d66550';g.fillRect(x-bw/2,y-e.r-7,bw*ratio,3);g.fillStyle='#f2e2b7';g.font='5px monospace';g.textAlign='center';g.fillText(e.kind.toUpperCase(),x,y-e.r-9)}
+}
 function loop(now){if(!active)return;let dt=Math.min((now-last)/1000,.045);last=now;update(dt);draw();if(active)requestAnimationFrame(loop)}
 draw();})();
 </script></body></html>
