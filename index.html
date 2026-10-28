@@ -46,7 +46,7 @@ function clock(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Mat
 function sync(){ui('health').textContent=Math.max(0,Math.ceil(player.hp))+' / '+player.maxHp;ui('healthbar').style.width=Math.max(0,player.hp/player.maxHp*100)+'%';ui('clock').textContent=clock(time);ui('day').textContent=day;ui('level').textContent=level;ui('xp').textContent=xp+' / '+xpNeed;ui('kills').textContent=kills;ui('xpbar').style.width=(xp/xpNeed*100)+'%'}
 function screen(x,y){return [Math.round(x-player.x+W/2),Math.round(y-player.y+H/2)]}
 function draw(){g.save();let jx=shake?Math.round((rand()-.5)*shake):0,jy=shake?Math.round((rand()-.5)*shake):0;shake*=.85;g.translate(jx,jy);drawGround();
-for(let o of orbs){let [x,y]=screen(o.x,o.y);drawSprite('grace',x,y,10*GAME_SCALE,10*GAME_SCALE)}
+for(let o of orbs){let [x,y]=screen(o.x,o.y);drawSprite('grace',x,y,14*GAME_SCALE,14*GAME_SCALE)}
 for(let s of shots){let [x,y]=screen(s.x,s.y);drawSprite('attack',x,y,8*GAME_SCALE,8*GAME_SCALE)}
 for(let e of foes){let [x,y]=screen(e.x,e.y);drawEnemy(e,x,y)}
 for(let f of fx){let [x,y]=screen(f.x,f.y);g.globalAlpha=Math.max(0,f.life*2);g.fillStyle=f.color;g.fillRect(x,y,2*GAME_SCALE,2*GAME_SCALE)}g.globalAlpha=1;
