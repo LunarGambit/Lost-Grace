@@ -10,7 +10,7 @@
 const canvas=document.getElementById('game'),g=canvas.getContext('2d'),ui=id=>document.getElementById(id);let W=canvas.width,H=canvas.height,GAME_SCALE=W/480;g.imageSmoothingEnabled=false;
 let active=false,paused=false,last=0,frameId=0,time=0,spawnClock=0,bossClock=0,attackClock=0,shake=0,kills=0,level=1,xp=0,xpNeed=5,day=1,damageFlash=0,moveLevel=0,critLevel=0;
 let player,foes=[],orbs=[],shots=[],fx=[],keys={},worldSeed=918273,noticeTimer=0;const GROUND_CHUNKS=new Map();
-const sprites={};for(const n of ['ground','player','wolf','bear','savage','giant','cyclops','nephilim','titan','grace','ranged']){const image=new Image();if(n==='ground')image.onload=()=>draw();image.src='assets/'+n+'.png';sprites[n]=image}
+const sprites={};for(const n of ['ground','player','wolf','bear','savage','giant','cyclops','nephilim','titan','grace','ranged']){const image=new Image();if(n==='ground'||n==='ranged')image.onload=()=>draw();image.src='assets/'+n+'.png';sprites[n]=image}
 const runNames=['player','wolf','bear','savage','giant','cyclops','nephilim','titan'],runSprites={},runBackSprites={},runDownSprites={};for(const n of runNames){const image=new Image();image.src='assets/run/'+n+'.png';runSprites[n]=image;const back=new Image();back.src='assets/run-back/'+n+'.png';runBackSprites[n]=back;const down=new Image();down.src='assets/run-down/'+n+'.png';runDownSprites[n]=down}
 const runFrameCounts={};for(const n of runNames){runFrameCounts[n]={right:(n==='player'||n==='savage'||n==='nephilim'||n==='giant'||n==='cyclops'||n==='titan')?4:3,left:(n==='player'||n==='savage'||n==='nephilim'||n==='giant'||n==='cyclops'||n==='titan')?4:3,up:['player','giant','cyclops','nephilim','titan','savage'].includes(n)?5:['wolf','bear'].includes(n)?4:3,down:5}}
 
@@ -47,8 +47,8 @@ function sync(){ui('health').textContent=Math.max(0,Math.ceil(player.hp))+' / '+
 function screen(x,y){return [Math.round(x-player.x+W/2),Math.round(y-player.y+H/2)]}
 function draw(){g.save();let jx=shake?Math.round((rand()-.5)*shake):0,jy=shake?Math.round((rand()-.5)*shake):0;shake*=.85;g.translate(jx,jy);drawGround();
 for(let o of orbs){let [x,y]=screen(o.x,o.y);drawSprite('grace',x,y,14*GAME_SCALE,14*GAME_SCALE)}
-for(let s of shots){let [x,y]=screen(s.x,s.y);g.save();g.translate(x,y);g.rotate(Math.atan2(s.vy,s.vx));drawSprite('ranged',0,0,24*GAME_SCALE,12*GAME_SCALE);g.restore()}
 for(let e of foes){let [x,y]=screen(e.x,e.y);drawEnemy(e,x,y)}
+for(let s of shots){let [x,y]=screen(s.x,s.y);g.save();g.translate(x,y);g.rotate(Math.atan2(s.vy,s.vx));drawSprite('ranged',0,0,24*GAME_SCALE,12*GAME_SCALE);g.restore()}
 for(let f of fx){let [x,y]=screen(f.x,f.y);g.globalAlpha=Math.max(0,f.life*2);g.fillStyle=f.color;g.fillRect(x,y,2*GAME_SCALE,2*GAME_SCALE)}g.globalAlpha=1;
 drawPlayer();g.restore();if(damageFlash){g.fillStyle='rgba(189,55,34,'+(damageFlash*1.2)+')';g.fillRect(0,0,W,H)}
 }
