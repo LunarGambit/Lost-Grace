@@ -42,14 +42,14 @@ function die(){active=false;paused=false;if(frameId)cancelAnimationFrame(frameId
 function clock(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0')}
 function sync(){ui('health').textContent=Math.max(0,Math.ceil(player.hp))+' / '+player.maxHp;ui('healthbar').style.width=Math.max(0,player.hp/player.maxHp*100)+'%';ui('clock').textContent=clock(time);ui('day').textContent=day;ui('level').textContent=level;ui('xp').textContent=xp+' / '+xpNeed;ui('kills').textContent=kills;ui('xpbar').style.width=(xp/xpNeed*100)+'%'}
 function screen(x,y){return [Math.round(x-player.x+W/2),Math.round(y-player.y+H/2)]}
-function draw(){g.save();let jx=shake?(rand()-.5)*shake:0,jy=shake?(rand()-.5)*shake:0;shake*=.85;g.translate(jx,jy);drawGround();
+function draw(){g.save();let jx=shake?Math.round((rand()-.5)*shake):0,jy=shake?Math.round((rand()-.5)*shake):0;shake*=.85;g.translate(jx,jy);drawGround();
 for(let o of orbs){let [x,y]=screen(o.x,o.y);drawSprite('grace',x,y,10*GAME_SCALE,10*GAME_SCALE)}
 for(let s of shots){let [x,y]=screen(s.x,s.y);drawSprite('attack',x,y,8*GAME_SCALE,8*GAME_SCALE)}
 for(let e of foes){let [x,y]=screen(e.x,e.y);drawEnemy(e,x,y)}
 for(let f of fx){let [x,y]=screen(f.x,f.y);g.globalAlpha=Math.max(0,f.life*2);g.fillStyle=f.color;g.fillRect(x,y,2*GAME_SCALE,2*GAME_SCALE)}g.globalAlpha=1;
 drawPlayer();g.restore();if(damageFlash){g.fillStyle='rgba(189,55,34,'+(damageFlash*1.2)+')';g.fillRect(0,0,W,H)}
 }
-function drawGround(){const image=sprites.ground;if(!image||!image.complete||!image.naturalWidth){g.fillStyle='#28552b';g.fillRect(0,0,W,H);return}const tw=image.naturalWidth,th=image.naturalHeight,worldX=W/2-(player?player.x:0),worldY=H/2-(player?player.y:0),ox=((worldX%tw)+tw)%tw,oy=((worldY%th)+th)%th;for(let y=oy-th;y<H;y+=th)for(let x=ox-tw;x<W;x+=tw)g.drawImage(image,x,y,tw,th)}
+function drawGround(){const image=sprites.ground,bleed=Math.ceil(4*GAME_SCALE)+2;g.fillStyle='#28552b';g.fillRect(-bleed,-bleed,W+bleed*2,H+bleed*2);if(!image||!image.complete||!image.naturalWidth)return;const tw=image.naturalWidth,th=image.naturalHeight,worldX=Math.round(W/2-(player?player.x:0)),worldY=Math.round(H/2-(player?player.y:0)),ox=((worldX%tw)+tw)%tw,oy=((worldY%th)+th)%th;let startX=ox-tw,startY=oy-th;while(startX>-bleed)startX-=tw;while(startY>-bleed)startY-=th;for(let y=startY;y<H+bleed;y+=th)for(let x=startX;x<W+bleed;x+=tw)g.drawImage(image,x,y,tw,th)}
 function drawSprite(name,x,y,w,h,flip=false){const image=sprites[name];if(!image||!image.complete||!image.naturalWidth)return;g.save();if(flip){g.translate(x,y);g.scale(-1,1);g.drawImage(image,-w/2,-h/2,w,h)}else g.drawImage(image,x-w/2,y-h/2,w,h);g.restore()}
 function drawPlayer(){g.fillStyle='#151812';g.fillRect(W/2-12*GAME_SCALE,H/2+25*GAME_SCALE,24*GAME_SCALE,4*GAME_SCALE);drawSprite('player',W/2,H/2,64*GAME_SCALE,64*GAME_SCALE);if(damageFlash){g.fillStyle='rgba(255,220,170,.5)';g.fillRect(W/2-10*GAME_SCALE,H/2-28*GAME_SCALE,20*GAME_SCALE,2*GAME_SCALE)}}
 function drawEnemy(e,x,y){
