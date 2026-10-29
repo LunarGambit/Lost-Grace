@@ -1,17 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
 <defs>
- <linearGradient id="slate" x2="1" y2="1"><stop stop-color="#4c565e"/><stop offset=".48" stop-color="#343d45"/><stop offset="1" stop-color="#252e36"/></linearGradient>
- <filter id="grain" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="19" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues=".04 .19"/></feComponentTransfer></filter>
- <linearGradient id="blue" x2="0" y2="1"><stop stop-color="#8eb9d6"/><stop offset="1" stop-color="#41627c"/></linearGradient>
+ <linearGradient id="slate" x1=".08" y1=".02" x2=".92" y2=".98"><stop stop-color="#525b62"/><stop offset=".3" stop-color="#3d474f"/><stop offset=".68" stop-color="#303a42"/><stop offset="1" stop-color="#222c34"/></linearGradient>
+ <filter id="grain" x="-3%" y="-3%" width="106%" height="106%">
+  <feTurbulence type="fractalNoise" baseFrequency=".052" numOctaves="4" seed="23" stitchTiles="stitch"/>
+  <feColorMatrix type="saturate" values="0"/>
+  <feComponentTransfer><feFuncR type="gamma" amplitude=".72" exponent="1.25" offset=".09"/><feFuncG type="gamma" amplitude=".72" exponent="1.25" offset=".09"/><feFuncB type="gamma" amplitude=".72" exponent="1.25" offset=".09"/><feFuncA type="table" tableValues=".02 .28"/></feComponentTransfer>
+ </filter>
+ <filter id="softRock" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="2" seed="47" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues=".02 .16"/></feComponentTransfer></filter>
+ <linearGradient id="vein" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7298b3" stop-opacity=".08"/><stop offset=".52" stop-color="#7ca9ca" stop-opacity=".4"/><stop offset="1" stop-color="#29455a" stop-opacity=".12"/></linearGradient>
 </defs>
-<rect width="256" height="256" fill="url(#slate)"/>
-<rect width="256" height="256" fill="#aab5bd" filter="url(#grain)" opacity=".45"/>
-<g fill="none" stroke-linecap="round">
- <path d="M25 35l15 8-8 12m-7-20 7 8m37 31 11 9-4 14m-7-23 10 8m45-45-10 13 7 8m11-18-8 9m47 24-15 8-5 14m18-21-8 5m46 42-12 9 3 12m8-21-5 8m-160 41 12 7-4 12m-8-19 5 7m64 31-11 7 4 12m-2-19-6 8m51-14 14 9-7 10m-5-17 8 6m62-37-11 8 3 12m9-20-6 6m-20 68-14 8 5 12m4-20-8 7" stroke="#161e25" stroke-width="1.2" opacity=".55"/>
- <path d="M25 34l15 8m34 36 10 8m39-50 9-7m39 25-15 8m59 39-12 9m-147 41 12 7m58 28-11 7m57-13 14 9m51-35-11 8m-17 65-14 8" stroke="#a5afb6" stroke-width=".65" opacity=".32"/>
+<rect width="512" height="512" fill="url(#slate)"/>
+<rect width="512" height="512" fill="#bec7cd" filter="url(#softRock)" opacity=".38"/>
+<rect width="512" height="512" fill="#cbd2d6" filter="url(#grain)" opacity=".46"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <g stroke="#151d23" stroke-width="2.2" opacity=".36">
+  <path d="M63 53l-18 17 8 14-19 21m112-80-13 18 10 14-21 23m73 61-18 12 6 19-14 15m115-143-21 18 9 16-17 23m128 45-15 16 7 18-19 16M95 276l-19 14 7 18-15 13m124-35-15 20 11 15-18 17m112-12-20 17 6 19-17 15m124-88-16 16 8 15-16 20M71 438l-19 15 7 17-17 14m130-13-17 17 9 17-16 14m126-68-20 17 10 19-19 14m134-67-18 15 7 19-16 12"/>
+  <path d="M41 142l17 8-8 13m167-69 11 8-7 13m172 6-14 10 5 16m-295 94 13 8-6 13m193 14 15 9-8 16m127 66-13 11 6 14m-296 40 16 9-6 14"/>
+ </g>
+ <g stroke="#bac5cb" stroke-width="1" opacity=".22">
+  <path d="M63 52 45 70m103-1-13 18m74-55-13 18m103 82-18 12m113-65-15 16M95 275l-19 15m119-5-15 20m112-19-20 17m124-71-16 16M71 437l-19 16m130-13-17 17m126-51-20 17m134-50-18 15"/>
+ </g>
 </g>
-<g fill="url(#blue)" opacity=".58">
- <path d="M17 108l5-4 4 5-5 3zM91 20l4-3 3 4-4 3zM149 96l5-4 3 5-5 3zM221 28l4-3 3 4-4 3zM202 143l5-3 3 5-5 2zM53 212l5-4 4 5-5 3zM116 181l4-3 3 4-4 3zM239 222l4-3 3 4-4 3z"/>
+<g fill="url(#vein)" opacity=".72">
+ <path d="M91 42l15-8 12 3-10 7-14 4zm171 42 19-9 11 4-15 8-13 3zm117 158 20-9 14 4-17 8-13 2zM58 346l17-8 12 4-14 7-12 2zm257 99 21-10 13 4-17 9-14 2z"/>
 </g>
-<g fill="#a9bac4" opacity=".22"><circle cx="31" cy="190" r="1.3"/><circle cx="75" cy="119" r="1"/><circle cx="177" cy="43" r="1.2"/><circle cx="226" cy="184" r="1.2"/><circle cx="132" cy="235" r="1.1"/><circle cx="12" cy="58" r="1"/></g>
+<g fill="#83a9c3" opacity=".48">
+ <path d="M31 191l5-4 7 3-3 6-7 1zm99 105 4-4 6 2-2 5-6 1zm173-213 5-4 7 3-4 6-6 1zm164 99 5-3 6 3-3 5-6 1zm-63 184 6-4 7 4-4 5-7 1zM80 465l5-4 6 3-3 5-7 1zm270-35 5-4 7 2-3 6-6 1zM226 38l4-3 6 2-2 5-6 1zM38 382l5-4 6 3-3 5-6 1zm403-23 4-3 7 2-3 6-6 1z"/>
+</g>
+<g fill="#b2c0ca" opacity=".2"><circle cx="149" cy="208" r="1.5"/><circle cx="244" cy="201" r="1.2"/><circle cx="379" cy="301" r="1.4"/><circle cx="184" cy="383" r="1.2"/><circle cx="458" cy="262" r="1.4"/><circle cx="113" cy="119" r="1.2"/><circle cx="305" cy="479" r="1.3"/><circle cx="26" cy="30" r="1"/></g>
 </svg>

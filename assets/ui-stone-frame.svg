@@ -1,19 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
 <defs>
- <linearGradient id="face" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#aab5bc"/><stop offset=".12" stop-color="#65727d"/><stop offset=".48" stop-color="#424e58"/><stop offset=".83" stop-color="#303a43"/><stop offset="1" stop-color="#172129"/></linearGradient>
- <linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d3d9dc"/><stop offset=".42" stop-color="#8c9aa4"/><stop offset="1" stop-color="#34414b"/></linearGradient>
- <clipPath id="ring"><path fill-rule="evenodd" d="M7 3H233L237 9V231L232 237H8L3 231V9ZM48 48V192H192V48Z"/></clipPath>
- <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="3" seed="9" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues=".08 .28"/></feComponentTransfer></filter>
+ <linearGradient id="stone" x1=".04" y1=".03" x2=".96" y2=".96"><stop stop-color="#9caab5"/><stop offset=".08" stop-color="#65737e"/><stop offset=".37" stop-color="#45525d"/><stop offset=".76" stop-color="#303b44"/><stop offset="1" stop-color="#172129"/></linearGradient>
+ <linearGradient id="topEdge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d2d9dd"/><stop offset=".24" stop-color="#aab7c0"/><stop offset=".56" stop-color="#71808b"/><stop offset="1" stop-color="#394650"/></linearGradient>
+ <linearGradient id="innerEdge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18232b"/><stop offset=".25" stop-color="#9ba9b2"/><stop offset=".52" stop-color="#53616c"/><stop offset="1" stop-color="#151e25"/></linearGradient>
+ <clipPath id="ring"><path fill-rule="evenodd" d="M10 3H502L509 10V502L502 509H10L3 502V10ZM58 58H454V454H58Z"/></clipPath>
+ <filter id="rockgrain" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency=".065" numOctaves="4" seed="31" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues=".03 .25"/></feComponentTransfer></filter>
 </defs>
-<path d="M7 3H233L237 9V231L232 237H8L3 231V9Z" fill="url(#face)"/>
-<path fill="#182129" d="M47 47H193V193H47z"/>
-<path fill="none" stroke="url(#light)" stroke-width="3" d="M8 5H231M5 10V230M9 234H231M234 10V230"/>
-<path fill="none" stroke="#111920" stroke-width="3" d="M48 49H192M49 49V191M48 191H192M191 49V191"/>
-<g clip-path="url(#ring)" fill="none">
- <rect width="240" height="240" fill="#aeb9c1" filter="url(#rough)" opacity=".38"/>
- <path d="M62 3V46M119 3V46M178 3V46M62 194V237M119 194V237M178 194V237M3 62H46M3 120H46M3 178H46M194 62H237M194 120H237M194 178H237" stroke="#19232b" stroke-width="2" opacity=".9"/>
- <path d="M63 4V44M120 4V44M179 4V44M63 195V235M120 195V235M179 195V235M4 63H44M4 121H44M4 179H44M195 63H235M195 121H235M195 179H235" stroke="#a6b1b8" stroke-width=".8" opacity=".55"/>
- <path d="M13 12l13 6-5 10m-7-16 8 5m51-9-8 10 8 9m-5-17-4 8m53-9-8 9 7 8m-3-17-4 8m53-9 7 8-8 11m9-17-5 8m50-8-10 9 7 10m-5-17-4 8M13 208l12 8-7 11m-3-19 8 6m52 5-8 9 7 10m-3-19-4 8m55-9-8 10 7 9m-4-19-4 8m55-8 7 10-7 10m7-19-5 8m51-8-9 8 6 11m-5-19-4 8M11 74l9-8 10 6m-17 2 9-5m-17 51 11-8 10 8m-21-1 10-6m-9 60 9-8 11 8m-19-1 9-6m140-96 10-8 10 8m-19 0 9-6m-10 59 10-8 9 8m-18-1 9-6m-8 61 9-9 11 7m-20 0 9-6" stroke="#141d24" stroke-width="1.1" opacity=".8"/>
- <g fill="#6f9dbb" stroke="none" opacity=".75"><circle cx="30" cy="35" r="1.7"/><circle cx="102" cy="22" r="1.5"/><circle cx="164" cy="32" r="1.4"/><circle cx="213" cy="36" r="1.6"/><circle cx="27" cy="102" r="1.5"/><circle cx="210" cy="106" r="1.7"/><circle cx="29" cy="161" r="1.6"/><circle cx="216" cy="173" r="1.5"/><circle cx="85" cy="219" r="1.5"/><circle cx="177" cy="216" r="1.7"/></g>
+<path fill="url(#stone)" fill-rule="evenodd" d="M10 3H502L509 10V502L502 509H10L3 502V10ZM58 58H454V454H58Z"/>
+<g clip-path="url(#ring)">
+ <rect width="512" height="512" fill="#b9c3ca" filter="url(#rockgrain)" opacity=".38"/>
+ <path fill="none" stroke="url(#topEdge)" stroke-width="4" d="M12 7H500M7 12V500"/>
+ <path fill="none" stroke="#111a21" stroke-width="5" d="M12 505H500M505 12V500"/>
+ <path fill="none" stroke="#202b33" stroke-width="4" d="M59 60H453M60 60V452"/>
+ <path fill="none" stroke="#b9c4ca" stroke-width="2.5" opacity=".66" d="M59 452H453M452 60V452"/>
+ <path fill="none" stroke="#d3dadd" stroke-width="1" opacity=".42" d="M16 9H495M9 16V493"/>
+ <path fill="none" stroke="#141c22" stroke-width="1.5" opacity=".6" d="M14 498H496M498 14V496"/>
+ <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M19 18l14 8-5 12 13 9m-22-29 8 12m-5 415 17 9-8 13 15 10m-25-32 10 13m417-421-14 11 5 14-14 13m24-38-10 12m-5 410-16 9 8 13-14 11m22-34-9 13" stroke="#172129" stroke-width="3" opacity=".72"/>
+  <path d="M18 17l14 8m-3 431 17 9m419-420-14 11m-5 409-16 9" stroke="#c3cdd2" stroke-width="1.2" opacity=".58"/>
+  <path d="M100 12l-11 10 5 9m76-14-9 8 5 11m97-19-8 10 6 9m101-17-10 9 5 12m75-15-8 10 6 9M119 498l-10-10 5-8m102 15-8-9 5-10m98 20-11-10 7-10m95 20-8-9 6-10M14 103l11 8-6 10m-6 94 10 7-5 11m-9 90 12 9-6 10m472-224-10 8 6 10m7 93-12 9 7 10m5 95-11 9 6 10" stroke="#162129" stroke-width="2" opacity=".75"/>
+ </g>
+ <g fill="#76a3c2" opacity=".68"><path d="M38 83l5-5 7 3-4 7-7 1zm433 50 6-4 7 3-4 7-7 1zM76 477l5-5 7 3-3 7-7 1zm375-10 5-4 6 3-3 6-6 1zM243 16l5-4 6 3-4 6-6 1zm-2 477 6-4 7 3-4 6-7 1z"/></g>
 </g>
 </svg>
