@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+<defs>
+ <linearGradient id="face" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#aab5bc"/><stop offset=".12" stop-color="#65727d"/><stop offset=".48" stop-color="#424e58"/><stop offset=".83" stop-color="#303a43"/><stop offset="1" stop-color="#172129"/></linearGradient>
+ <linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d3d9dc"/><stop offset=".42" stop-color="#8c9aa4"/><stop offset="1" stop-color="#34414b"/></linearGradient>
+ <clipPath id="ring"><path fill-rule="evenodd" d="M7 3H233L237 9V231L232 237H8L3 231V9ZM48 48V192H192V48Z"/></clipPath>
+ <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="3" seed="9" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues=".08 .28"/></feComponentTransfer></filter>
+</defs>
+<path d="M7 3H233L237 9V231L232 237H8L3 231V9Z" fill="url(#face)"/>
+<path fill="#182129" d="M47 47H193V193H47z"/>
+<path fill="none" stroke="url(#light)" stroke-width="3" d="M8 5H231M5 10V230M9 234H231M234 10V230"/>
+<path fill="none" stroke="#111920" stroke-width="3" d="M48 49H192M49 49V191M48 191H192M191 49V191"/>
+<g clip-path="url(#ring)" fill="none">
+ <rect width="240" height="240" fill="#aeb9c1" filter="url(#rough)" opacity=".38"/>
+ <path d="M62 3V46M119 3V46M178 3V46M62 194V237M119 194V237M178 194V237M3 62H46M3 120H46M3 178H46M194 62H237M194 120H237M194 178H237" stroke="#19232b" stroke-width="2" opacity=".9"/>
+ <path d="M63 4V44M120 4V44M179 4V44M63 195V235M120 195V235M179 195V235M4 63H44M4 121H44M4 179H44M195 63H235M195 121H235M195 179H235" stroke="#a6b1b8" stroke-width=".8" opacity=".55"/>
+ <path d="M13 12l13 6-5 10m-7-16 8 5m51-9-8 10 8 9m-5-17-4 8m53-9-8 9 7 8m-3-17-4 8m53-9 7 8-8 11m9-17-5 8m50-8-10 9 7 10m-5-17-4 8M13 208l12 8-7 11m-3-19 8 6m52 5-8 9 7 10m-3-19-4 8m55-9-8 10 7 9m-4-19-4 8m55-8 7 10-7 10m7-19-5 8m51-8-9 8 6 11m-5-19-4 8M11 74l9-8 10 6m-17 2 9-5m-17 51 11-8 10 8m-21-1 10-6m-9 60 9-8 11 8m-19-1 9-6m140-96 10-8 10 8m-19 0 9-6m-10 59 10-8 9 8m-18-1 9-6m-8 61 9-9 11 7m-20 0 9-6" stroke="#141d24" stroke-width="1.1" opacity=".8"/>
+ <g fill="#6f9dbb" stroke="none" opacity=".75"><circle cx="30" cy="35" r="1.7"/><circle cx="102" cy="22" r="1.5"/><circle cx="164" cy="32" r="1.4"/><circle cx="213" cy="36" r="1.6"/><circle cx="27" cy="102" r="1.5"/><circle cx="210" cy="106" r="1.7"/><circle cx="29" cy="161" r="1.6"/><circle cx="216" cy="173" r="1.5"/><circle cx="85" cy="219" r="1.5"/><circle cx="177" cy="216" r="1.7"/></g>
+</g>
+</svg>
