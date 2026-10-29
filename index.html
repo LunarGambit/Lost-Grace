@@ -36,6 +36,14 @@ body,.shell{background:#101316;background-image:none}
 .overlay{background:rgba(9,14,19,.82)}
 
 
+/* Keep slate texture on secondary action buttons in their resting state */
+.btn.secondary{
+  background-color:#303a43;
+  background-image:linear-gradient(rgba(10,14,17,.18),rgba(10,14,17,.24)),var(--stone-surface);
+  background-repeat:no-repeat,no-repeat;
+  background-size:100% 100%,cover;
+  background-position:center center;
+}
 /* Improve slate edge separation and preserve stone on hover */
 .panel{
   outline:2px solid #aebdc7;
