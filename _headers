@@ -4,8 +4,14 @@
 /index.html
   Content-Type: text/html; charset=utf-8
 
-/*.js
+/generated-game-world.js
   Content-Type: text/javascript; charset=utf-8
 
-/*.html
+/three-view/package/build/*
+  Content-Type: text/javascript; charset=utf-8
+
+/three-view/package/examples/jsm/*
+  Content-Type: text/javascript; charset=utf-8
+
+/generated-grid-three-enemy-test.html
   Content-Type: text/html; charset=utf-8
