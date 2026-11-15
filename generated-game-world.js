@@ -85,7 +85,7 @@ function placeAssets(landmarks){
  function add(name,height,point,kind){const [x,z]=point;used.push([x,z,assetRadius(name,height)]);placements[kind].push({x,z,variant:name})}
  function spaced(name,count,height,kind,minDistance){for(let i=0;i<count;i++){let picked=null;for(let t=0;t<12000;t++){const p=candidate(assetRadius(name,height));if(p&&placements[kind].every(v=>Math.hypot(v.x-p[0],v.z-p[1])>=minDistance)){picked=p;break}}if(!picked)throw Error('Could not place '+kind+' with required spacing');add(name,height,picked,kind)}}
  spaced('fruit',6,30,'fruit',100);spaced('meadowFruit',3,7.5,'fruit',100);spaced('obelisk',2,10,'obelisks',350);spaced('pile',10,2.0141362249851227,'piles',50);
- for(let i=0;i<50;i++){let best=null,bestDistance=-1;for(let t=0;t<120;t++){const p=candidate(assetRadius('chest',1.25));if(!p)continue;const distance=placements.chests.length?Math.min(...placements.chests.map(v=>Math.hypot(v.x-p[0],v.z-p[1]))):Infinity;if(distance>bestDistance){best=p;bestDistance=distance}}if(!best)throw Error('Could not place chest');add('chest',1.25,best,'chests')}
+ for(let i=0;i<100;i++){let best=null,bestDistance=-1;for(let t=0;t<120;t++){const p=candidate(assetRadius('chest',1.25));if(!p)continue;const distance=placements.chests.length?Math.min(...placements.chests.map(v=>Math.hypot(v.x-p[0],v.z-p[1]))):Infinity;if(distance>bestDistance){best=p;bestDistance=distance}}if(!best)throw Error('Could not place chest');add('chest',1.25,best,'chests')}
  counts.fruit=placements.fruit.length;counts.obelisks=placements.obelisks.length;counts.piles=placements.piles.length;counts.chests=placements.chests.length;window.mapAssetPlacements=placements;return counts
 }
 
