@@ -96,11 +96,11 @@ function batchSmallScenery(){
  for(const root of mapGroup.children){if(root.name!=='scenery-bush'&&root.name!=='scenery-rock')continue;
   const regionX=Math.max(0,Math.min(2,Math.floor((root.position.x+HALF)/200))),regionZ=Math.max(0,Math.min(2,Math.floor((root.position.z+HALF)/200)));
   root.traverse(mesh=>{if(!mesh.isMesh||Array.isArray(mesh.material)||mesh.isSkinnedMesh)return;
-   const key=[regionX,regionZ,mesh.geometry.uuid,mesh.material.uuid].join(':');let group=batches.get(key);if(!group){group={geometry:mesh.geometry,material:mesh.material,matrices:[]};batches.set(key,group)}group.matrices.push(mesh.matrixWorld.clone());mesh.visible=false
+   const key=[regionX,regionZ,mesh.geometry.uuid,mesh.material.uuid].join(':');let group=batches.get(key);if(!group){group={geometry:mesh.geometry,material:mesh.material,matrices:[],sources:[]};batches.set(key,group)}group.matrices.push(mesh.matrixWorld.clone());group.sources.push(mesh);mesh.visible=false
   });
  }
  const inverse=new THREE.Matrix4().copy(mapGroup.matrixWorld).invert();for(const group of batches.values()){
-  const instanced=new THREE.InstancedMesh(group.geometry,group.material,group.matrices.length);instanced.name='batched-scenery';for(let i=0;i<group.matrices.length;i++)instanced.setMatrixAt(i,new THREE.Matrix4().multiplyMatrices(inverse,group.matrices[i]));instanced.instanceMatrix.needsUpdate=true;instanced.computeBoundingSphere();mapGroup.add(instanced)
+  const instanced=new THREE.InstancedMesh(group.geometry,group.material,group.matrices.length);instanced.name='batched-scenery';instanced.userData.cameraFadeSources=group.sources;for(let i=0;i<group.matrices.length;i++)instanced.setMatrixAt(i,new THREE.Matrix4().multiplyMatrices(inverse,group.matrices[i]));instanced.instanceMatrix.needsUpdate=true;instanced.computeBoundingSphere();mapGroup.add(instanced)
  }
 }
 let landmarks=null;for(let attempt=0;attempt<100&&!landmarks;attempt++){buildLayout();landmarks=chooseLandmarks()}if(!landmarks)throw Error('Could not generate valid landmark locations');buildGeometry();const counts=placeAssets(landmarks);batchSmallScenery();mapGroup.updateMatrixWorld(true);return {group:mapGroup,ground:mapGroup.getObjectByName('generatedGround'),cliffs:mapGroup.getObjectByName('generatedCliffs'),placements:window.mapAssetPlacements,heightAt,counts};
