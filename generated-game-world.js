@@ -14,8 +14,8 @@ function compactTreeAsset(source){
 export function createGeneratedWorld(scene,assetData){
  assetData={...assetData,tree:compactTreeAsset(assetData.tree)};
 const N=15,CELL=40,HALF=300,HEIGHT=10,RUN=HEIGHT/Math.tan(Math.PI/6),RAMPWIDTH=CELL,dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-const tex=new THREE.TextureLoader().load('./grass-concept.png');tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-const wallTex=new THREE.TextureLoader().load('./cliff-rock-tile.png');wallTex.colorSpace=THREE.SRGBColorSpace;wallTex.wrapS=wallTex.wrapT=THREE.RepeatWrapping;
+const tex=new THREE.TextureLoader().load('./grass-new.png');tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+const wallTex=new THREE.TextureLoader().load('./cliffside-new.png');wallTex.colorSpace=THREE.SRGBColorSpace;wallTex.wrapS=wallTex.wrapT=THREE.RepeatWrapping;
 const groundMat=new THREE.MeshStandardMaterial({name:'lambert2',map:tex,roughness:1,side:THREE.DoubleSide}),cliffMat=new THREE.MeshStandardMaterial({map:wallTex,roughness:1,side:THREE.DoubleSide});
 let mapGroup=new THREE.Group(),layout=[],ramps=[],gridVisible=false,seed=(Math.random()*4294967296)>>>0;scene.add(mapGroup);
 function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}function at(x,z){return layout[z]?.[x]}function cellCoord(x,z){return [Math.max(0,Math.min(N-1,Math.floor((x+HALF)/CELL))),Math.max(0,Math.min(N-1,Math.floor((z+HALF)/CELL)))]}function cellMin(i){return -HALF+i*CELL}function rampUsesCell(r,x,z){return r.cells?r.cells.some(v=>v[0]===x&&v[1]===z):r.lowX===x&&r.lowZ===z}function rampHeight(r,x,z){const run=r.run||RUN,rise=r.rise||HEIGHT;let t;if(r.dir[0]===1)t=(x-(r.border-run))/run;else if(r.dir[0]===-1)t=((r.border+run)-x)/run;else if(r.dir[1]===1)t=(z-(r.border-run))/run;else t=((r.border+run)-z)/run;return r.baseHeight+rise*THREE.MathUtils.clamp(t,0,1)}function heightAt(x,z){const [cx,cz]=cellCoord(x,z),cell=at(cx,cz);for(const r of ramps)if(rampUsesCell(r,cx,cz)&&x>=r.x0-1e-7&&x<=r.x1+1e-7&&z>=r.z0-1e-7&&z<=r.z1+1e-7)return rampHeight(r,x,z);return cell.level*HEIGHT}
@@ -54,7 +54,7 @@ function buildGeometry(){
 function asset(name,height){const obj=clone(assetData[name].scene),box=new THREE.Box3().setFromObject(obj),dim=box.getSize(new THREE.Vector3()),k=height/Math.max(dim.y,.01);obj.scale.multiplyScalar(k);obj.updateMatrixWorld(true);box.setFromObject(obj);const mid=box.getCenter(new THREE.Vector3());obj.position.sub(new THREE.Vector3(mid.x,box.min.y,mid.z));const anchor=new THREE.Group();anchor.add(obj);return anchor}
 function chooseLandmarks(){
  const candidates=[];for(let z=0;z<N;z++)for(let x=0;x<N;x++){if(ramps.some(r=>rampUsesCell(r,x,z)))continue;const px=cellMin(x)+CELL/2,pz=cellMin(z)+CELL/2,region=[Math.floor(x/5),Math.floor(z/5)];candidates.push({x,z,px,pz,region})}candidates.sort(()=>rand()-.5);
- const specs=[['circle',19.5,70],['tower',75,33],['tower',75,33],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30]],chosen=[];let attempts=0;
+ const specs=[['circle',19.5,70],['tower',75,40],['tower',75,40],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30]],chosen=[];let attempts=0;
  function fits(c,name,radius){if(Math.abs(c.px)+radius>HALF-20||Math.abs(c.pz)+radius>HALF-20||Math.hypot(c.px-35,c.pz-35)<radius+5)return false;
   if(chosen.some(v=>Math.hypot(c.px-v.px,c.pz-v.pz)<Math.max(50,radius+v.radius+2)))return false;
   if(name==='tower'&&chosen.some(v=>v.name==='tower'&&Math.abs(c.region[0]-v.region[0])<=1&&Math.abs(c.region[1]-v.region[1])<=1))return false;
@@ -66,7 +66,7 @@ function chooseLandmarks(){
 }
 function placeAssets(landmarks){
  const placements={landmarks:landmarks.map(v=>({name:v.name,x:v.px,z:v.pz,region:v.region,radius:v.radius})),fruit:[],obelisks:[],piles:[],chests:[],scenery:[]};
- for(const v of landmarks){const obj=asset(v.name,v.height);obj.position.add(new THREE.Vector3(v.px,heightAt(v.px,v.pz),v.pz));obj.rotation.y=rand()*Math.PI*2;obj.name='landmark-'+v.name;mapGroup.add(obj)}
+ for(const v of landmarks){const obj=asset(v.name,v.height);obj.position.add(new THREE.Vector3(v.px,heightAt(v.px,v.pz)-(v.name==='tower'?6:0),v.pz));obj.rotation.y=rand()*Math.PI*2;obj.name='landmark-'+v.name;mapGroup.add(obj)}
  const available=[];for(let z=0;z<N;z++)for(let x=0;x<N;x++){const px=cellMin(x)+CELL/2,pz=cellMin(z)+CELL/2;if(ramps.some(r=>rampUsesCell(r,x,z))||Math.hypot(px-35,pz-35)<25||landmarks.some(v=>Math.hypot(px-v.px,pz-v.pz)<v.radius+15))continue;available.push({x,z,region:Math.floor(z/5)*3+Math.floor(x/5)})}available.sort(()=>rand()-.5);
  const counts={trees:0,bushes:0,rocks:0,circle:1,ruins:4,towers:2};
  // Use horizontal model footprints plus five clear units, not only center points.
@@ -74,18 +74,19 @@ function placeAssets(landmarks){
  const used=landmarks.map(v=>[v.px,v.pz,v.radius]);
  function clearOfAssets(x,z,radius){return used.every(v=>Math.hypot(v[0]-x,v[1]-z)>=v[2]+radius+5)}
  for(const [name,count,height,key] of [['tree',90,32,'trees'],['bush',32,7.5,'bushes'],['rock',35,5,'rocks']]){
-  const byRegion=Array(9).fill(0),radius=assetRadius(name,height);
+  const byRegion=Array(9).fill(0);
   for(let i=0;i<count;i++){
+   const modelName=name==='rock'?(rand()<.75?'rock2':'rock1'):name,modelHeight=modelName==='rock1'?height*3:height,radius=assetRadius(modelName,modelHeight);
    const order=available.map((c,index)=>({c,index})).sort((a,b)=>byRegion[a.c.region]-byRegion[b.c.region]);let chosen=null;
    for(const entry of order){const c=entry.c;for(let t=0;t<12;t++){const px=cellMin(c.x)+6+rand()*(CELL-12),pz=cellMin(c.z)+6+rand()*(CELL-12);if(clearOfAssets(px,pz,radius)){chosen={c,index:entry.index,px,pz};break}}if(chosen)break}
-   if(!chosen)throw Error('Not enough clear scenery cells');const {c,index,px,pz}=chosen;available.splice(index,1);const obj=asset(name,height);obj.position.add(new THREE.Vector3(px,heightAt(px,pz)-(name==='rock'?.5:0),pz));obj.rotation.y=rand()*Math.PI*2;obj.name='scenery-'+name; mapGroup.add(obj);used.push([px,pz,radius]);byRegion[c.region]++;counts[key]++;placements.scenery.push({name,x:px,z:pz,cell:[c.x,c.z],region:c.region,radius})
+   if(!chosen)throw Error('Not enough clear scenery cells');const {c,index,px,pz}=chosen;available.splice(index,1);const obj=asset(modelName,modelHeight);obj.position.add(new THREE.Vector3(px,heightAt(px,pz)-(name==='rock'?.5:0),pz));obj.rotation.y=rand()*Math.PI*2;obj.name='scenery-'+name;obj.userData.collisionRadius=name==='rock'&&modelName==='rock1'?7.5:name==='bush'?2.2:name==='rock'?2.5:3; mapGroup.add(obj);used.push([px,pz,radius]);byRegion[c.region]++;counts[key]++;placements.scenery.push({name,variant:modelName,x:px,z:pz,cell:[c.x,c.z],region:c.region,radius})
   }
  }
  function candidate(radius){const x=(rand()*2-1)*280,z=(rand()*2-1)*280,[cx,cz]=cellCoord(x,z);if(ramps.some(r=>rampUsesCell(r,cx,cz))||!clearOfAssets(x,z,radius))return null;return [x,z]}
  function add(name,height,point,kind){const [x,z]=point;used.push([x,z,assetRadius(name,height)]);placements[kind].push({x,z,variant:name})}
  function spaced(name,count,height,kind,minDistance){for(let i=0;i<count;i++){let picked=null;for(let t=0;t<12000;t++){const p=candidate(assetRadius(name,height));if(p&&placements[kind].every(v=>Math.hypot(v.x-p[0],v.z-p[1])>=minDistance)){picked=p;break}}if(!picked)throw Error('Could not place '+kind+' with required spacing');add(name,height,picked,kind)}}
- spaced('fruit',6,30,'fruit',100);spaced('meadowFruit',3,7.5,'fruit',100);spaced('obelisk',2,10,'obelisks',350);spaced('pile',10,2.0141362249851227,'piles',50);
- for(let i=0;i<100;i++){let best=null,bestDistance=-1;for(let t=0;t<120;t++){const p=candidate(assetRadius('chest',1.25));if(!p)continue;const distance=placements.chests.length?Math.min(...placements.chests.map(v=>Math.hypot(v.x-p[0],v.z-p[1]))):Infinity;if(distance>bestDistance){best=p;bestDistance=distance}}if(!best)throw Error('Could not place chest');add('chest',1.25,best,'chests')}
+ spaced('obelisk',2,10,'obelisks',350);spaced('pile',10,3.021204337477684,'piles',50);
+ for(let i=0;i<100;i++){let best=null,bestDistance=-1;for(let t=0;t<120;t++){const p=candidate(assetRadius('chest',1.5625));if(!p)continue;const distance=placements.chests.length?Math.min(...placements.chests.map(v=>Math.hypot(v.x-p[0],v.z-p[1]))):Infinity;if(distance>bestDistance){best=p;bestDistance=distance}}if(!best)throw Error('Could not place chest');add('chest',1.5625,best,'chests')}
  counts.fruit=placements.fruit.length;counts.obelisks=placements.obelisks.length;counts.piles=placements.piles.length;counts.chests=placements.chests.length;window.mapAssetPlacements=placements;return counts
 }
 
