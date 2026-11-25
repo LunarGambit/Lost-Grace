@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export async function loadStaticModel(name) {
   const base = `./new-models/${name}/${name}`;
   const [response, texture] = await Promise.all([
-    fetch(`${base}.obj${name === 'RuinCircle' ? '?v=restore-20261124-3' : name === 'RuinArch' ? '?v=arch-triangulated-20261124-2' : ''}`), new THREE.TextureLoader().loadAsync(`${base}${name === 'RuinCircle' ? '-matching.png' : '.png'}${name === 'RuinArch' ? '?v=arch-triangulated-20261124-2' : ''}`)
+    fetch(`${base}${name === 'RuinCircle' ? '-low-414.obj' : name === 'RuinArch' ? '-low-86.obj' : name === 'Tower' ? '-replacement.obj' : '.obj'}`), new THREE.TextureLoader().loadAsync(`${base}${name === 'RuinCircle' ? '-low-414.png' : name === 'RuinArch' ? '-low-86.png' : name === 'Tower' ? '-replacement.png' : '.png'}`)
   ]);
   if (!response.ok) throw new Error(`Could not load ${name}: ${response.status}`);
   const vertices = [], uvs = [], normals = [], positions = [], texcoords = [], outNormals = [];
@@ -29,6 +29,17 @@ export async function loadStaticModel(name) {
   geometry.setAttribute('normal', new THREE.Float32BufferAttribute(outNormals, 3));
   texture.colorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Group();
-  scene.add(new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({map: texture, roughness: .8})));
+  const visible=new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({map: texture, roughness: .8}));
+  if(name==='Tower')visible.userData.visualOnlyTower=true;
+  scene.add(visible);
+  if(name==='Tower'){
+    const material=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});
+    const body=new THREE.Mesh(new THREE.BoxGeometry(.84,1.9025,.85),material);
+    body.position.set(0,-.00075,-.43);body.visible=false;body.userData.collisionProxy=true;scene.add(body);
+    const rampGeometry=new THREE.BufferGeometry();
+    rampGeometry.setAttribute('position',new THREE.Float32BufferAttribute([-.36,-.27,0, .36,-.27,0, -.36,-.95,.90, .36,-.27,0, .36,-.95,.90, -.36,-.95,.90],3));
+    rampGeometry.computeVertexNormals();
+    const ramp=new THREE.Mesh(rampGeometry,material);ramp.visible=false;ramp.userData.collisionProxy=true;scene.add(ramp);
+  }
   return {scene, animations: []};
 }

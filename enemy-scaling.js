@@ -2,7 +2,8 @@
 export function ordinaryEnemyHealth(seconds){
   const minutes=Math.max(0,seconds)/60;
   const baseline=12*(1+.16*minutes+.012*minutes*minutes),atTen=12*(1+.16*10+.012*100);
-  return baseline+Math.max(0,baseline-atTen);
+  const atFortyFive=12*(1+.16*45+.012*45*45);
+  return baseline+Math.max(0,baseline-atTen)+2*Math.max(0,baseline-atFortyFive);
 }
 
 // Keep the existing damage pace, but interpolate between minute marks.
@@ -16,5 +17,5 @@ export function enemySpeedMultiplier(seconds){
 }
 
 // From ten minutes onward ordinary enemy damage grows at twice its earlier rate.
-export function ordinaryEnemyDamageMultiplier(seconds){return enemyDamageMultiplier(seconds)+.15*Math.max(0,seconds-600)/60}
+export function ordinaryEnemyDamageMultiplier(seconds){return enemyDamageMultiplier(seconds)+.15*Math.max(0,seconds-600)/60+.30*Math.max(0,seconds-2700)/60}
 export function ordinarySpawnScale(seconds){return seconds>=600?.5:1}
