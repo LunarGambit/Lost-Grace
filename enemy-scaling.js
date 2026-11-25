@@ -1,7 +1,8 @@
 // Baseline difficulty for ordinary enemies; health is fixed at spawn.
 export function ordinaryEnemyHealth(seconds){
   const minutes=Math.max(0,seconds)/60;
-  return 12*(1+.16*minutes+.012*minutes*minutes);
+  const baseline=12*(1+.16*minutes+.012*minutes*minutes),atTen=12*(1+.16*10+.012*100);
+  return baseline+Math.max(0,baseline-atTen);
 }
 
 // Keep the existing damage pace, but interpolate between minute marks.
@@ -13,3 +14,7 @@ export function enemyDamageMultiplier(seconds){
 export function enemySpeedMultiplier(seconds){
   return 1+Math.min(.3,.005*Math.max(0,seconds)/60);
 }
+
+// From ten minutes onward ordinary enemy damage grows at twice its earlier rate.
+export function ordinaryEnemyDamageMultiplier(seconds){return enemyDamageMultiplier(seconds)+.15*Math.max(0,seconds-600)/60}
+export function ordinarySpawnScale(seconds){return seconds>=600?.5:1}

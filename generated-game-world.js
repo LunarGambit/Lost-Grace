@@ -66,7 +66,7 @@ function chooseLandmarks(){
 }
 function placeAssets(landmarks){
  const placements={landmarks:landmarks.map(v=>({name:v.name,x:v.px,z:v.pz,region:v.region,radius:v.radius})),fruit:[],obelisks:[],piles:[],chests:[],scenery:[]};
- for(const v of landmarks){const obj=asset(v.name,v.height);obj.position.add(new THREE.Vector3(v.px,heightAt(v.px,v.pz)-(v.name==='tower'?6:0),v.pz));obj.rotation.y=rand()*Math.PI*2;obj.name='landmark-'+v.name;mapGroup.add(obj)}
+ for(const v of landmarks){const obj=asset(v.name,v.height);obj.position.add(new THREE.Vector3(v.px,heightAt(v.px,v.pz)-(v.name==='tower'?6:v.name==='circle'?2.5:v.name==='ruin'?1:0),v.pz));obj.rotation.y=rand()*Math.PI*2;obj.name='landmark-'+v.name;mapGroup.add(obj)}
  const available=[];for(let z=0;z<N;z++)for(let x=0;x<N;x++){const px=cellMin(x)+CELL/2,pz=cellMin(z)+CELL/2;if(ramps.some(r=>rampUsesCell(r,x,z))||Math.hypot(px-35,pz-35)<25||landmarks.some(v=>Math.hypot(px-v.px,pz-v.pz)<v.radius+15))continue;available.push({x,z,region:Math.floor(z/5)*3+Math.floor(x/5)})}available.sort(()=>rand()-.5);
  const counts={trees:0,bushes:0,rocks:0,circle:1,ruins:4,towers:2};
  // Use horizontal model footprints plus five clear units, not only center points.

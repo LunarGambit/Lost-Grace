@@ -1,6 +1,6 @@
 // Chest item tiers and limits are separate from the five gear rarities.
 export const itemChart={
- 'oracles-eye':['gold',2], 'coinpurse':['blue',10], 'blood-diamond':['purple',5],
+ 'oracles-eye':['gold',2], 'coinpurse':['blue',10], pestilence:['blue',10], plauge:['purple',5], riot:['purple',5], 'deep-cuts':['purple',5], 'seeing-stars':['purple',5], 'break-a-leg':['purple',5], 'crushing-skulls':['purple',5], 'blood-diamond':['purple',5],
  'bigger-rocks':['white',10], 'stone-club':['white',10], ironbark:['white',10],
  'sharpened-bone':['white',10], quickcord:['white',10], 'stone-tools':['blue',10],
  hardtack:['white',10], 'fortunes-knuckle':['white',10], hotshot:['purple',6],
@@ -14,29 +14,44 @@ export const itemChart={
  'fallens-wing':['blue',5], acrobatics:['blue',5], 'rough-hide':['blue',5],
  'ravens-feather':['blue',5], 'wide-stance':['blue',5], 'quick-reflexes':['blue',5],
  adaptation:['purple',5], counterstrike:['purple',5],
- 'light-conversion':['purple',6], 'dark-conversion':['purple',6]
+ 'light-conversion':['purple',6], 'dark-conversion':['purple',6],
+ 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
 };
 export const newItems=[
+ ['warriors-feast',"Warriors Feast",'+0.0025% of maximum HP as ATK and MATK'],
+ ['well-rested','Well Rested','+0.005% of maximum HP as defense and magic defense'],
+ ['the-best-offense','The Best Offense','+5% of defense as ATK and MATK'],
+ ['winged-sandals','Winged Sandals','+3% of movement speed increase as ATK and MATK, rounded'],
+ ['supressing-fire','Supressing Fire','+0.2 percentage points of evasion per extra projectile'],
+ ['iron-defense','Iron Defense','+0.003 percentage points of block per defense'],
+ ['the-best-defense','The Best Defense','+15% of ATK as defense'],
+ ['riot','Riot','Enemies killed by bleed or crushing blow have a 2% chance per copy to explode for 100% ATK in a 10-unit radius'],
+ ['deep-cuts','Deep Cuts','Physical attacks have a 1% chance per copy to bleed for 3% maximum HP per second for 3 seconds, plus 10% ATK per half-second tick'],
+ ['seeing-stars','Seeing Stars','Physical attacks have a 1% chance per copy to stun for 0.5 seconds, scaling with ATK'],
+ ['break-a-leg','Break A Leg','Physical attacks have a 1% chance per copy to maim enemies within 8 units, slowing them 15% for 3 seconds, scaling with ATK'],
+ ['crushing-skulls','Crushing Skulls','Physical attacks have a 1% chance per copy to cause a crushing blow for 3% maximum HP per second for 3 seconds, plus 10% ATK per half-second tick'],
+ ['plauge','Plauge','Enemies killed by burn or poison have a 2% chance per copy to explode, dealing 100% of your magic attack as magical damage within 10 units'],
+ ['pestilence','Pestilence','On killing an afflicted enemy, each active magical or physical status has a 5% chance per copy to spread to enemies within 10 units for its remaining duration'],
  ['rabbits-foot',"Rabbit's Foot",'+50 Luck per copy'],['soul-wisp','Soul Wisp','+5% magic attack per copy'],
  ['sharp-claws','Sharp Claws','Heal 0.5 HP per melee hit per copy'],['soul-siphon','Soul Siphon','Heal 0.2 HP per ranged hit per copy'],
  ['timeless-hourglass','Timeless Hourglass','Combat items trigger one additional time'],
  ['unstable-grace','Unstable Grace','Ranged hits launch one homing missile per copy at another enemy'],
- ['pyrotechnics','Pyrotechnics','1% chance per copy to burn for 1% maximum HP per second for 5 seconds'],
- ['permafrost','Permafrost','1% chance per copy to freeze for 0.5 seconds'],
- ['energy-of-the-gods','Energy of the Gods','1% chance per copy to shock nearby enemies, slowing them 15% for 3 seconds'],
- ['ancient-wrappings','Ancient Wrappings','1% chance per copy to poison for 3% maximum HP per second for 3 seconds'],
+ ['pyrotechnics','Pyrotechnics','Magical attacks have a 1% chance per copy to burn for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
+ ['permafrost','Permafrost','Magical attacks have a 1% chance per copy to freeze for 0.5 seconds, with duration increased by 0.1% per MATK'],
+ ['energy-of-the-gods','Energy of the Gods','Magical attacks have a 1% chance per copy to shock nearby enemies, slowing them 15% for 3 seconds, with duration increased by 0.1% per MATK'],
+ ['ancient-wrappings','Ancient Wrappings','Magical attacks have a 1% chance per copy to poison for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
  ['fallens-wing',"Fallen's Wing",'Fall 10% slower per copy'],['acrobatics','Acrobatics','Deal 10% more damage per copy while airborne'],
  ['rough-hide','Rough Hide','Reflect 10% of damage taken per copy to enemies within 15 units'],
  ['ravens-feather',"Raven's Feather",'Gain 10% attack speed per copy while airborne'],
  ['wide-stance','Wide Stance','Gain 5% block chance per copy'],['quick-reflexes','Quick Reflexes','Gain 5% evade chance per copy'],
- ['adaptation','Adaptation','Blocking builds defense stacks that expire after 3 seconds without another block'],
+ ['adaptation','Adaptation','Blocking builds defense and magic defense stacks that expire after 3 seconds without another block'],
  ['counterstrike','Counterstrike','Evading builds attack stacks that expire after 3 seconds without another evade'],
  ['light-conversion','Light Conversion','Converts 50% ATK to MATK, plus 5 percentage points per additional copy'],
  ['dark-conversion','Dark Conversion','Converts 50% MATK to ATK, plus 5 percentage points per additional copy']
 ];
 export function chestWeights(luck){
   const multiplier=1+Math.max(0,Math.min(1000,luck))/100,exponent=1.5*Math.log(1.5);
-  const weights=[55,30,10,5].map((base,index)=>base*Math.pow(multiplier,-(3-index)*exponent));
+  const weights=[70,15,6,1.5].map((base,index)=>base*Math.pow(multiplier,-(3-index)*exponent));
   const total=weights.reduce((sum,weight)=>sum+weight,0);
   return Object.fromEntries(['white','blue','purple','gold'].map((tier,index)=>[tier,100*weights[index]/total]));
 }
@@ -45,3 +60,6 @@ export function convertAttackStats(attack,magicAttack,lightCopies,darkCopies){
  const light=attack*fraction(lightCopies),dark=magicAttack*fraction(darkCopies);
  return {attack:attack-light+dark,magicAttack:magicAttack-dark+light};
 }
+
+// All conversions use the same snapshot before these items contribute.
+export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.000025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.round(Math.max(0,stats.movementIncrease)*.03);return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:def+n('well-rested')*hp*.00005+n('the-best-defense')*atk*.15,magicDefense:stats.magicDefense+n('well-rested')*hp*.00005,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*def*.003}}

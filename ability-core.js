@@ -1,0 +1,9 @@
+export const ABILITY_DURATION=60,ABILITY_COOLDOWN=90;
+export function newAbilityClock(){return {activeUntil:0,readyAt:90,form:null,lastForm:null}};
+export function abilityPhase(clock,time){return time<clock.activeUntil?'active':time<clock.readyAt?'cooldown':'ready'}
+export function startAbility(clock,time,form=null){if(abilityPhase(clock,time)!=='ready')return false;clock.form=form;if(form)clock.lastForm=form;clock.activeUntil=time+ABILITY_DURATION;clock.readyAt=clock.activeUntil+ABILITY_COOLDOWN;return true}
+export function cooldownProgress(clock,time){if(abilityPhase(clock,time)==='active')return 1;return Math.max(0,Math.min(1,1-(clock.readyAt-time)/ABILITY_COOLDOWN))}
+export function abilityModifiers(name,form,active){if(!active)return {};switch(name){case 'Amazon':return {move:.25,attackSpeed:.25,projectiles:10};case 'Druid':return form==='bear'?{damageTaken:.65,hp:2,explosion:5,staminaDrain:.3}:{attackSpeed:.5,crit:50,attack:.5,magicAttack:.5,damageTaken:1.25,killHeal:true,staminaDrain:.3};case 'Ranger':return {crit:50,evade:25,attackRange:25,attackSpeed:.25,criticalHeal:true};case 'Sorcerer':return {aura:25};case 'Warrior':return {attackSpeed:.5,attack:1,damageTaken:.5};case 'Witch':return {magicAttack:.5,attackSpeed:.25,explosion:10,killHeal:true};default:return {}}}
+export function sprintDrainMultiplier(gearReduction,abilityReduction=0){return 1-Math.min(1,Math.min(.4,Math.max(0,gearReduction)/100)+abilityReduction)}
+export function refreshDot(enemy,key,time,duration=5){const until=key+'Until',next=key+'Next';if(!(enemy[until]>time)||!Number.isFinite(enemy[next]))enemy[next]=time+.5;enemy[until]=time+duration}
+export function drainDotTicks(enemy,key,time){const until=enemy[key+'Until']||0;let next=enemy[key+'Next'],count=0;if(!Number.isFinite(next))return 0;while(next<=time+1e-9&&next<=until+1e-9){count++;next+=.5}enemy[key+'Next']=next;return count}

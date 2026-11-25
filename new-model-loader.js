@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export async function loadStaticModel(name) {
   const base = `./new-models/${name}/${name}`;
   const [response, texture] = await Promise.all([
-    fetch(`${base}.obj`), new THREE.TextureLoader().loadAsync(`${base}.png`)
+    fetch(`${base}.obj${name === 'RuinCircle' ? '?v=restore-20261124-3' : name === 'RuinArch' ? '?v=arch-triangulated-20261124-2' : ''}`), new THREE.TextureLoader().loadAsync(`${base}.png${name === 'RuinArch' ? '?v=arch-triangulated-20261124-2' : ''}`)
   ]);
   if (!response.ok) throw new Error(`Could not load ${name}: ${response.status}`);
   const vertices = [], uvs = [], normals = [], positions = [], texcoords = [], outNormals = [];
