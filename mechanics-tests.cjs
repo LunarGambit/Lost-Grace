@@ -24,6 +24,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   const {equipment,compatibilityMessage}=await import('data:text/javascript;base64,'+Buffer.from(attachments).toString('base64'));
   const magics=['SpiritFocus','WitchesTalisman','SoulStone'];
   for(const offhand of magics){assert.equal(compatibilityMessage('HandAxe',offhand,false).length>0,true);assert.equal(compatibilityMessage('HandAxe',offhand,true),'');assert.equal(compatibilityMessage('Wand',offhand,true),'')}
+  for(const weapon of ['HandAxe','Cudgel'])for(const shield of ['WoodShield','StoneShield','BoneShield'])for(const magical of [false,true])assert.equal(compatibilityMessage(weapon,shield,magical),'');
   assert.notEqual(compatibilityMessage('Bow','WoodShield',false),'');
   assert.equal(compatibilityMessage('Bow','Quiver',false),'');
   assert.notEqual(compatibilityMessage('Staff','Quiver',true),'');
@@ -130,7 +131,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   vm.createContext(ctx);vm.runInContext(enchantCode,ctx);await ctx.toggleWeaponEnchantment();assert.equal(ctx.xp,100);assert.equal(weapon.enchantFlipped,false);
   ctx.gameConfirm=async()=>true;await ctx.toggleWeaponEnchantment();assert.equal(ctx.xp,90);assert.equal(weapon.enchantFlipped,true);
   ctx.gearCatalog.shield={equipModel:'WoodShield'};ctx.loadout.ranged.offhand='shield';await ctx.toggleWeaponEnchantment();assert.equal(ctx.xp,81);assert.equal(weapon.enchantFlipped,false);
-  await ctx.toggleWeaponEnchantment();assert.equal(ctx.xp,81);assert.equal(weapon.enchantFlipped,false);
+  await ctx.toggleWeaponEnchantment();assert.ok(Math.abs(ctx.xp-72.9)<1e-9);assert.equal(weapon.enchantFlipped,true);
 
   const statusCode=between('function statusDurationMultiplier(){','function tickCombatItems(dt){');
   const statusEnemy={hp:100,outer:{position:{distanceToSquared:()=>0}}},statusCtx={elapsed:10,itemCount:id=>['pyrotechnics','ancient-wrappings','permafrost','energy-of-the-gods'].includes(id)?1:0,Math:{random:()=>0,max:Math.max},gearStats:()=>({magicAttack:0}),refreshDot,nearbyEnemies:()=>[statusEnemy]};

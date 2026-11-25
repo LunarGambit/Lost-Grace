@@ -34,7 +34,7 @@ export function compatibilityMessage(weapon, offhand, magical=false) {
   if (magicOffhand)
     return (weapon==='Wand'&&magical)||(['Bow','Cudgel','HandAxe','Javelin','ThrowingKnives'].includes(weapon)&&magical)
       ? '' : 'A magic offhand requires an enchanted compatible weapon.';
-  if (shield&&['Wand','Sling','Javelin','ThrowingKnives'].includes(weapon)) return '';
+  if (shield&&['Wand','Sling','Javelin','ThrowingKnives','HandAxe','Cudgel'].includes(weapon)) return '';
   if (shield&&magical) return 'A magic weapon requires a compatible magic offhand.';
   return w?.twoHanded ? 'Shields cannot be equipped with a two-handed weapon.' : '';
 }
