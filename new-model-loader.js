@@ -37,7 +37,11 @@ export async function loadStaticModel(name) {
     const body=new THREE.Mesh(new THREE.BoxGeometry(.84,1.9025,.85),material);
     body.position.set(0,-.00075,-.43);body.visible=false;body.userData.collisionProxy=true;scene.add(body);
     const rampGeometry=new THREE.BufferGeometry();
-    rampGeometry.setAttribute('position',new THREE.Float32BufferAttribute([-.36,-.27,0, .36,-.27,0, -.36,-.95,.90, .36,-.27,0, .36,-.95,.90, -.36,-.95,.90],3));
+    rampGeometry.setAttribute('position',new THREE.Float32BufferAttribute([
+      -.43,-.27,0, .43,-.27,0, -.53,-.95,.90, .43,-.27,0, .53,-.95,.90, -.53,-.95,.90,
+      -.43,-.95,0, -.43,-.27,0, -.53,-.95,.90,
+      .43,-.95,0, .53,-.95,.90, .43,-.27,0
+    ],3));
     rampGeometry.computeVertexNormals();
     const ramp=new THREE.Mesh(rampGeometry,material);ramp.visible=false;ramp.userData.collisionProxy=true;scene.add(ramp);
   }
