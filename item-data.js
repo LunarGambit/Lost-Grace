@@ -4,7 +4,7 @@ export const itemChart={
  'bigger-rocks':['white',10], 'stone-club':['white',10], ironbark:['white',10],
  'sharpened-bone':['white',10], quickcord:['white',10], 'stone-tools':['blue',10],
  hardtack:['white',10], 'fortunes-knuckle':['white',10], hotshot:['purple',6],
- 'iron-hammer':['purple',6], 'close-quarters':['purple',6], 'heavy-swings':['purple',5],
+ unstoppable:['purple',5], 'iron-hammer':['purple',6], 'close-quarters':['purple',6], 'heavy-swings':['purple',5],
  'field-medic':['purple',5], 'bloodied-fang':['purple',6], 'ancient-hide':['purple',6],
  graveplate:['purple',6], 'broken-horseshoe':['purple',4], deathspark:['purple',6],
  'radiant-grace':['gold',6], 'golden-cup':['gold',2], 'power-rune':['gold',1], 'titans-might':['gold',1],
@@ -18,12 +18,13 @@ export const itemChart={
  'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
 };
 export const newItems=[
- ['warriors-feast',"Warriors Feast",'+0.0025% of maximum HP as ATK and MATK'],
- ['well-rested','Well Rested','+0.005% of maximum HP as defense and magic defense'],
+ ['unstoppable','Unstoppable','While sprinting, deal 15% increased damage per copy'],
+ ['warriors-feast',"Warriors Feast",'+2.5% of maximum HP as ATK and MATK'],
+ ['well-rested','Well Rested','+5% of maximum HP as defense and magic defense'],
  ['the-best-offense','The Best Offense','+5% of defense as ATK and MATK'],
- ['winged-sandals','Winged Sandals','+3% of movement speed increase as ATK and MATK, rounded'],
+ ['winged-sandals','Winged Sandals','Gain ATK and MATK equal to 50% of movement speed increase, up to 350 each'],
  ['supressing-fire','Supressing Fire','+0.2 percentage points of evasion per extra projectile'],
- ['iron-defense','Iron Defense','+0.003 percentage points of block per defense'],
+ ['iron-defense','Iron Defense','Gain block chance equal to 0.5% of current Defense, up to +25% block chance'],
  ['the-best-defense','The Best Defense','+15% of ATK as defense'],
  ['riot','Riot','Enemies killed by bleed or crushing blow have a 2% chance per copy to explode for 100% ATK in a 10-unit radius'],
  ['deep-cuts','Deep Cuts','Physical attacks have a 1% chance per copy to bleed for 3% maximum HP per second for 3 seconds, plus 10% ATK per half-second tick'],
@@ -62,4 +63,4 @@ export function convertAttackStats(attack,magicAttack,lightCopies,darkCopies){
 }
 
 // All conversions use the same snapshot before these items contribute.
-export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.000025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.round(Math.max(0,stats.movementIncrease)*.03);return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:def+n('well-rested')*hp*.00005+n('the-best-defense')*atk*.15,magicDefense:stats.magicDefense+n('well-rested')*hp*.00005,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*def*.003}}
+export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.min(350,Math.round(Math.max(0,stats.movementIncrease)*.5)),currentDefense=def+n('well-rested')*hp*.05+n('the-best-defense')*atk*.15;return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:currentDefense,magicDefense:stats.magicDefense+n('well-rested')*hp*.05,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*Math.min(25,Math.max(0,currentDefense)*.005)}}

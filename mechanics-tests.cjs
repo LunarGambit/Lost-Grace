@@ -139,7 +139,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   assert.equal(statusEnemy.burnUntil,13);assert.equal(statusEnemy.burnRate,.03);assert.equal(statusEnemy.poisonUntil,13);assert.equal(statusEnemy.freezeUntil,10.5);assert.equal(statusEnemy.freezeImmuneUntil,11);assert.equal(statusEnemy.shockUntil,13);
   statusCtx.elapsed=10.6;statusCtx.procEnemyEffects(statusEnemy);assert.equal(statusEnemy.freezeUntil,10.5);
   const dotEnemy={hp:100,maxHp:100,burnUntil:15,poisonUntil:13,burnNext:10.5,poisonNext:10.5};
-  const tickCtx={elapsed:11,adaptationStacks:0,counterStacks:0,wolves:[dotEnemy],homingMissiles:[],testEnemiesProtected:false,drainDotTicks,gearStats:()=>({magicAttack:0}),killEnemy(){},itemCount:()=>0};
+  const tickCtx={unstoppableDamageMultiplier:()=>1,elapsed:11,adaptationStacks:0,counterStacks:0,wolves:[dotEnemy],homingMissiles:[],testEnemiesProtected:false,drainDotTicks,gearStats:()=>({magicAttack:0}),killEnemy(){},itemCount:()=>0};
   vm.createContext(tickCtx);vm.runInContext(between('function tickCombatItems(dt){','function launchUnstableMissiles('),tickCtx);tickCtx.tickCombatItems(1);assert.equal(dotEnemy.hp,96);
   const spawnCode=between('function spawnEnemy(){','function spawnRaidElite(');
   class Object3D{constructor(){this.position={set(){}}}}
