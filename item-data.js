@@ -16,9 +16,10 @@ export const itemChart={
  adaptation:['purple',5], counterstrike:['purple',5],
  'light-conversion':['purple',6], 'dark-conversion':['purple',6],
  'blood-pact':['purple',5], 'locust-swarm':['gold',3], canibilism:['gold',3],
- 'overcharged':['gold',1], 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
+ 'wings-of-light':['gold',5], 'overcharged':['gold',1], 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
 };
 export const newItems=[
+ ['wings-of-light','Wings of Light','Hold jump while falling to hover for up to 6 seconds; +1 second per additional copy'],
  ['blood-pact','Blood Pact','Deal 15% more damage per copy; lose 1 HP per copy each attack'],
  ['locust-swarm','Locust Swarm','Bleed, crushing blow, burn and poison deal 25% more damage per copy; their effects reflect onto you at 25%, plus 5% per additional copy'],
  ['canibilism','Canibilism','Heal 2 HP per copy for each damage-over-time tick on an enemy'],
