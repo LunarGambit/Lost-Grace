@@ -15,9 +15,13 @@ export const itemChart={
  'ravens-feather':['blue',5], 'wide-stance':['blue',5], 'quick-reflexes':['blue',5],
  adaptation:['purple',5], counterstrike:['purple',5],
  'light-conversion':['purple',6], 'dark-conversion':['purple',6],
+ 'blood-pact':['purple',5], 'locust-swarm':['gold',3], canibilism:['gold',3],
  'overcharged':['gold',1], 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
 };
 export const newItems=[
+ ['blood-pact','Blood Pact','Deal 15% more damage per copy; lose 1 HP per copy each attack'],
+ ['locust-swarm','Locust Swarm','Bleed, crushing blow, burn and poison deal 25% more damage per copy; their effects reflect onto you at 25%, plus 5% per additional copy'],
+ ['canibilism','Canibilism','Heal 2 HP per copy for each damage-over-time tick on an enemy'],
  ['overcharged','Overcharged','Reduce class ability cooldown by 50%'],
  ['unstoppable','Unstoppable','While sprinting, deal 15% increased damage per copy'],
  ['warriors-feast',"Warriors Feast",'+2.5% of maximum HP as ATK and MATK'],
@@ -35,7 +39,7 @@ export const newItems=[
  ['plauge','Plauge','Enemies killed by burn or poison have a 2% chance per copy to explode, dealing 100% of your magic attack as magical damage within 10 units'],
  ['pestilence','Pestilence','On killing an afflicted enemy, each active magical or physical status has a 5% chance per copy to spread to enemies within 10 units for its remaining duration'],
  ['rabbits-foot',"Rabbit's Foot",'+50 Luck per copy'],['soul-wisp','Soul Wisp','+5% magic attack per copy'],
- ['sharp-claws','Sharp Claws','Heal 0.5 HP per melee hit per copy'],['soul-siphon','Soul Siphon','Heal 0.2 HP per ranged hit per copy'],
+ ['sharp-claws','Sharp Claws','Heal 0.5 HP per melee hit per copy'],['soul-siphon','Soul Siphon','Heal 0.5 HP per ranged hit per copy'],
  ['timeless-hourglass','Timeless Hourglass','Combat items trigger one additional time'],
  ['unstable-grace','Unstable Grace','Ranged hits launch one homing missile per copy at another enemy'],
  ['pyrotechnics','Pyrotechnics','Magical attacks have a 5% chance per copy to burn for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],

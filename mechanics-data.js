@@ -16,10 +16,10 @@ export function classStats(name, level=1) {
 export const gearValues={
  BattleAxe:[25,10,5,5],Bow:[10,10,0,0],Crossbow:[15,5,0,0],Sling:[0,0,0,0],
  Cudgel:[10,5,0,0],Hammer:[25,10,5,5],HandAxe:[10,5,0,0],Spear:[25,5,5,5],
- Javelin:[5,10,0,0],Staff:[0,15,0,0],WalkingStick:[20,20,0,0],Wand:[0,15,0,0],ThrowingKnives:[10,10,0,0],
+ Javelin:[5,10,0,0],Staff:[0,15,0,0],WalkingStick:[20,20,0,0],Wand:[0,15,0,0],VoodooDoll:[10,20,0,0],ThrowingKnives:[10,10,0,0],
  WoodShield:[5,5,10,5],StoneShield:[5,5,25,10],BoneShield:[10,10,50,35],
- WitchesTalisman:[0,10,5,5],SoulStone:[0,5,10,10],SpiritFocus:[0,15,25,25],Pouch:[5,5,0,0],Quiver:[10,10,0,0]
+ WitchesTalisman:[0,10,5,5],SoulStone:[0,5,10,10],ShrunkenHead:[0,0,15,15],SpiritFocus:[0,15,25,25],Pouch:[5,5,0,0],Quiver:[10,10,0,0]
 };
-export const enchantableWeapons=new Set(['Bow','Cudgel','HandAxe','Javelin','Staff','WalkingStick','Wand','ThrowingKnives']);
-export const magicalBaseWeapons=new Set(['Staff','Wand']);
+export const enchantableWeapons=new Set(['Bow','Cudgel','HandAxe','Javelin','Staff','WalkingStick','Wand','VoodooDoll','ThrowingKnives']);
+export const magicalBaseWeapons=new Set(['Staff','Wand','VoodooDoll']);
 export const rarityBonus={common:.05,uncommon:.075,rare:.10,mythic:.125,holy:.15};

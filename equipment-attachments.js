@@ -17,8 +17,10 @@ export const equipment = {
   Staff: {slot:'weapon',twoHanded:true,grip:grip('RightHand',.65,[0,.08,-.1],[130,95,-45])},
   ThrowingKnives: {slot:'weapon',ranged:true,grip:grip('RightHand',.35,[0,.12,0],[0,110,0],.5)},
   WalkingStick: {slot:'weapon',twoHanded:true,grip:grip('RightHand',.65,[0,.04,-.1],[-100,0,-25],1.5)},
+  VoodooDoll: {slot:'weapon',ranged:true,grip:grip('RightHand',.35,[-.04,.08,0],[105,-110,0])},
   Wand: {slot:'weapon',grip:grip('RightHand',.35,[-.02,.04,.1],[120,-75,20])},
   SpiritFocus: {slot:'offhand',grip:focus}, WitchesTalisman: {slot:'offhand',grip:focus},
+  ShrunkenHead: {slot:'offhand',grip:grip('LeftHand',.35,[.02,.04,-.14],[75,70,0])},
   SoulStone: {slot:'offhand',grip:grip('LeftHand',.35,[.06,.08,0],[-235,-5,0],.33)},
   WoodShield: {slot:'offhand',grip:shield}, StoneShield: {slot:'offhand',grip:shield}, BoneShield: {slot:'offhand',grip:shield},
   Quiver: {slot:'offhand',grip:grip('Hips',.35,[.14,-.06,0],[30,0,15])},
@@ -27,12 +29,12 @@ export const equipment = {
 export function compatibilityMessage(weapon, offhand, magical=false) {
   if (!offhand) return '';
   const w=equipment[weapon];
-  const magicOffhand=['SpiritFocus','WitchesTalisman','SoulStone'].includes(offhand);
+  const magicOffhand=['SpiritFocus','WitchesTalisman','SoulStone','ShrunkenHead'].includes(offhand);
   const shield=['WoodShield','StoneShield','BoneShield'].includes(offhand);
   if (['Pouch','Quiver'].includes(offhand))
     return w?.ranged ? '' : 'Pouches and quivers require a ranged weapon.';
   if (magicOffhand)
-    return (weapon==='Wand'&&magical)||(['Bow','Cudgel','HandAxe','Javelin','ThrowingKnives'].includes(weapon)&&magical)
+    return (['Wand','VoodooDoll'].includes(weapon)&&magical)||(['Bow','Cudgel','HandAxe','Javelin','ThrowingKnives'].includes(weapon)&&magical)
       ? '' : 'A magic offhand requires an enchanted compatible weapon.';
   if (shield&&['Wand','Sling','Javelin','ThrowingKnives','HandAxe','Cudgel'].includes(weapon)) return '';
   if (shield&&magical) return 'A magic weapon requires a compatible magic offhand.';
@@ -44,7 +46,7 @@ export const iconFiles = {
   BattleAxe:'BattleAxe.png', Bow:'Bow.png', Crossbow:'Crossbow.png', Cudgel:'Cudgel.png',
   Hammer:'Hammer.png', HandAxe:'Handaxe.png', Sling:'Sling.png', Spear:'Spear.png',
   Staff:'Staff.png', ThrowingKnives:'ThrowingKnives.png', WalkingStick:'WalkingStick.png',
-  Wand:'Wand.png', BoneShield:'BoneShield.png', StoneShield:'StoneShield.png',
+  VoodooDoll:'VoodooDoll.png', ShrunkenHead:'ShrunkenHead.png', Wand:'Wand.png', BoneShield:'BoneShield.png', StoneShield:'StoneShield.png',
   WoodShield:'WoodShield.png', Pouch:'Pouch.png', Quiver:'Quiver.png', Javelin:'Javelin.png', WitchesTalisman:'WitchFocus.png',
   SoulStone:'SoulStone.png', SpiritFocus:'SpiritFocus.png'
 };
@@ -65,7 +67,7 @@ export function createEquipmentAttachments(character, bindHeight, onError=consol
   function clear(slot) { const s=state[slot]; s.token=(s.token||0)+1; if(s.holder)s.holder.removeFromParent(); s.holder=null; s.name=null; }
   async function set(slot,name,phase='idle',options={}) {
     if (!name || !equipment[name] || equipment[name].slot!==slot) {clear(slot); return true;}
-    const spec=equipment[name], hipMagic=slot==='offhand'&&['Bow','Javelin'].includes(options.weapon)&&options.magical&&['SpiritFocus','WitchesTalisman','SoulStone'].includes(name), selected=hipMagic?grip('Hips',.35,[.14,-.06,0],[30,0,15],spec.grip.scale):phase==='attack' && spec.attackGrip ? spec.attackGrip : spec.grip;
+    const spec=equipment[name], hipMagic=slot==='offhand'&&['Bow','Javelin'].includes(options.weapon)&&options.magical&&['SpiritFocus','WitchesTalisman','SoulStone','ShrunkenHead'].includes(name), selected=hipMagic?grip('Hips',.35,[.14,-.06,0],[30,0,15],spec.grip.scale):phase==='attack' && spec.attackGrip ? spec.attackGrip : spec.grip;
     const signature=name+':'+(hipMagic?'bowHip':selected===spec.attackGrip?'attack':'default'), s=state[slot];
     if(s.name===signature)return true;
     clear(slot); s.name=signature; const token=s.token;
