@@ -122,8 +122,8 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   const defs=Object.entries(itemChart).map(([id,[tier,max]])=>({id,tier,max}));
   const chestCtx={itemDefs:defs,itemCount:()=>0,itemLuck:()=>0,chestWeights,Math:math};vm.createContext(chestCtx);
   vm.runInContext(between('function rollChestOffers(){','function renderItemOffers()'),chestCtx);
-  const counts={white:0,blue:0,purple:0,gold:0};
-  for(let i=0;i<12000;i++){const offers=chestCtx.rollChestOffers();assert.equal(offers.length,3);assert.equal(new Set(offers).size,3);assert.ok(!offers.includes('iron-hammer'));counts[itemChart[offers[0]][0]]++}
+  const counts={white:0,blue:0,purple:0,gold:0};let ironHammerSeen=false;
+  for(let i=0;i<12000;i++){const offers=chestCtx.rollChestOffers();assert.equal(offers.length,3);assert.equal(new Set(offers).size,3);ironHammerSeen ||= offers.includes('iron-hammer');counts[itemChart[offers[0]][0]]++}assert.ok(ironHammerSeen, 'Iron Hammer should appear in regular chests');
   for(const [tier,expected] of Object.entries({white:70/92.5,blue:15/92.5,purple:6/92.5,gold:1.5/92.5}))assert.ok(Math.abs(counts[tier]/12000-expected)<.025,`${tier}: ${counts[tier]}`);
 
   const enchantCode=between('let enchantConfirmationPending=false;','function renderGear(){');
