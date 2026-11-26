@@ -36,10 +36,10 @@ export const newItems=[
  ['unstoppable','Unstoppable','While sprinting, deal 15% increased damage per copy'],
  ['warriors-feast',"Warriors Feast",'+2.5% of maximum HP as ATK and MATK; +10% healing received'],
  ['well-rested','Well Rested','+5% of maximum HP as defense and magic defense; +10% healing received'],
- ['the-best-offense','The Best Offense','+5% of defense as ATK and MATK'],
- ['winged-sandals','Winged Sandals','Gain ATK and MATK equal to 50% of movement speed increase, up to 350 each'],
+ ['the-best-offense','The Best Offense','+5% of combined defense and magic defense as ATK and MATK'],
+ ['winged-sandals','Winged Sandals','Gain ATK and MATK equal to 100% of movement speed increase, up to 100 each'],
  ['supressing-fire','Supressing Fire','+0.2 percentage points of evasion per extra projectile'],
- ['iron-defense','Iron Defense','Gain block chance equal to 0.5% of current Defense, up to +25% block chance'],
+ ['iron-defense','Iron Defense','Gain block chance equal to 0.5% of combined Defense and Magic Defense, up to +25% block chance'],
  ['the-best-defense','The Best Defense','+15% of combined ATK and MATK as defense'],
  ['riot','Riot','Enemies killed by bleed or crushing blow have a 2% chance per copy to explode for 100% ATK in a 10-unit radius'],
  ['deep-cuts','Deep Cuts','Physical attacks have a 1% chance per copy to bleed for 3% maximum HP per second for 3 seconds, plus 10% ATK per half-second tick'],
@@ -80,4 +80,4 @@ export function convertAttackStats(attack,magicAttack,lightCopies,darkCopies){
 }
 
 // All conversions use the same snapshot before these items contribute.
-export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.min(350,Math.round(Math.max(0,stats.movementIncrease)*.5)),currentDefense=def+n('well-rested')*hp*.05+n('the-best-defense')*(atk+stats.magicAttack)*.15;return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:currentDefense,magicDefense:stats.magicDefense+n('well-rested')*hp*.05,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*Math.min(25,Math.max(0,currentDefense)*.005)}}
+export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.025+n('the-best-offense')*(def+stats.magicDefense)*.05+n('winged-sandals')*Math.min(100,Math.max(0,stats.movementIncrease)),currentDefense=def+n('well-rested')*hp*.05+n('the-best-defense')*(atk+stats.magicAttack)*.15;return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:currentDefense,magicDefense:stats.magicDefense+n('well-rested')*hp*.05,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*Math.min(25,Math.max(0,currentDefense+stats.magicDefense+n('well-rested')*hp*.05)*.005)}}
