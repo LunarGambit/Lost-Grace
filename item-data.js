@@ -15,9 +15,10 @@ export const itemChart={
  'ravens-feather':['blue',5], 'wide-stance':['blue',5], 'quick-reflexes':['blue',5],
  adaptation:['purple',5], counterstrike:['purple',5],
  'light-conversion':['purple',6], 'dark-conversion':['purple',6],
- 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
+ 'overcharged':['gold',1], 'warriors-feast':['gold',1], 'well-rested':['gold',1], 'the-best-offense':['gold',1], 'winged-sandals':['gold',1], 'supressing-fire':['gold',1], 'iron-defense':['gold',1], 'the-best-defense':['gold',1]
 };
 export const newItems=[
+ ['overcharged','Overcharged','Reduce class ability cooldown by 50%'],
  ['unstoppable','Unstoppable','While sprinting, deal 15% increased damage per copy'],
  ['warriors-feast',"Warriors Feast",'+2.5% of maximum HP as ATK and MATK'],
  ['well-rested','Well Rested','+5% of maximum HP as defense and magic defense'],
@@ -25,7 +26,7 @@ export const newItems=[
  ['winged-sandals','Winged Sandals','Gain ATK and MATK equal to 50% of movement speed increase, up to 350 each'],
  ['supressing-fire','Supressing Fire','+0.2 percentage points of evasion per extra projectile'],
  ['iron-defense','Iron Defense','Gain block chance equal to 0.5% of current Defense, up to +25% block chance'],
- ['the-best-defense','The Best Defense','+15% of ATK as defense'],
+ ['the-best-defense','The Best Defense','+15% of combined ATK and MATK as defense'],
  ['riot','Riot','Enemies killed by bleed or crushing blow have a 2% chance per copy to explode for 100% ATK in a 10-unit radius'],
  ['deep-cuts','Deep Cuts','Physical attacks have a 1% chance per copy to bleed for 3% maximum HP per second for 3 seconds, plus 10% ATK per half-second tick'],
  ['seeing-stars','Seeing Stars','Physical attacks have a 1% chance per copy to stun for 0.5 seconds, scaling with ATK'],
@@ -37,11 +38,11 @@ export const newItems=[
  ['sharp-claws','Sharp Claws','Heal 0.5 HP per melee hit per copy'],['soul-siphon','Soul Siphon','Heal 0.2 HP per ranged hit per copy'],
  ['timeless-hourglass','Timeless Hourglass','Combat items trigger one additional time'],
  ['unstable-grace','Unstable Grace','Ranged hits launch one homing missile per copy at another enemy'],
- ['pyrotechnics','Pyrotechnics','Magical attacks have a 1% chance per copy to burn for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
- ['permafrost','Permafrost','Magical attacks have a 1% chance per copy to freeze for 0.5 seconds, with duration increased by 0.1% per MATK'],
- ['energy-of-the-gods','Energy of the Gods','Magical attacks have a 1% chance per copy to shock nearby enemies, slowing them 15% for 3 seconds, with duration increased by 0.1% per MATK'],
- ['ancient-wrappings','Ancient Wrappings','Magical attacks have a 1% chance per copy to poison for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
- ['fallens-wing',"Fallen's Wing",'Fall 10% slower per copy'],['acrobatics','Acrobatics','Deal 10% more damage per copy while airborne'],
+ ['pyrotechnics','Pyrotechnics','Magical attacks have a 5% chance per copy to burn for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
+ ['permafrost','Permafrost','Magical attacks have a 5% chance per copy to freeze for 0.5 seconds, with duration increased by 0.1% per MATK'],
+ ['energy-of-the-gods','Energy of the Gods','Magical attacks have a 5% chance per copy to shock nearby enemies, slowing them 15% for 3 seconds, with duration increased by 0.1% per MATK'],
+ ['ancient-wrappings','Ancient Wrappings','Magical attacks have a 5% chance per copy to poison for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
+ ['fallens-wing',"Fallen's Wing",'Fall 15% slower per copy'],['acrobatics','Acrobatics','Deal 10% more damage per copy while airborne'],
  ['rough-hide','Rough Hide','Reflect 10% of damage taken per copy to enemies within 15 units'],
  ['ravens-feather',"Raven's Feather",'Gain 10% attack speed per copy while airborne'],
  ['wide-stance','Wide Stance','Gain 5% block chance per copy'],['quick-reflexes','Quick Reflexes','Gain 5% evade chance per copy'],
@@ -51,7 +52,9 @@ export const newItems=[
  ['dark-conversion','Dark Conversion','Converts 50% MATK to ATK, plus 5 percentage points per additional copy']
 ];
 export function chestWeights(luck){
-  const multiplier=1+Math.max(0,Math.min(1000,luck))/100,exponent=1.5*Math.log(1.5);
+  const value=Math.max(0,Math.min(1000,luck));
+  const effectiveLuck=value<=350?value*(190.35115100188494/350):value<=500?190.35115100188494+(value-350)*(191.21592367184886/150):381.5670746737338+(value-500)*(618.4329253262662/500);
+  const multiplier=1+effectiveLuck/100,exponent=1.5*Math.log(1.5);
   const weights=[70,15,6,1.5].map((base,index)=>base*Math.pow(multiplier,-(3-index)*exponent));
   const total=weights.reduce((sum,weight)=>sum+weight,0);
   return Object.fromEntries(['white','blue','purple','gold'].map((tier,index)=>[tier,100*weights[index]/total]));
@@ -63,4 +66,4 @@ export function convertAttackStats(attack,magicAttack,lightCopies,darkCopies){
 }
 
 // All conversions use the same snapshot before these items contribute.
-export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.min(350,Math.round(Math.max(0,stats.movementIncrease)*.5)),currentDefense=def+n('well-rested')*hp*.05+n('the-best-defense')*atk*.15;return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:currentDefense,magicDefense:stats.magicDefense+n('well-rested')*hp*.05,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*Math.min(25,Math.max(0,currentDefense)*.005)}}
+export function crossStatBonuses(stats,counts){const n=id=>counts[id]||0, hp=stats.maxHp, def=stats.defense, atk=stats.attack;const addedAttack=n('warriors-feast')*hp*.025+n('the-best-offense')*def*.05+n('winged-sandals')*Math.min(350,Math.round(Math.max(0,stats.movementIncrease)*.5)),currentDefense=def+n('well-rested')*hp*.05+n('the-best-defense')*(atk+stats.magicAttack)*.15;return {attack:atk+addedAttack,magicAttack:stats.magicAttack+addedAttack,defense:currentDefense,magicDefense:stats.magicDefense+n('well-rested')*hp*.05,evade:stats.evade+n('supressing-fire')*stats.projectiles*.2,block:stats.block+n('iron-defense')*Math.min(25,Math.max(0,currentDefense)*.005)}}

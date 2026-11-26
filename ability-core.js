@@ -1,8 +1,9 @@
 export const ABILITY_DURATION=60,ABILITY_COOLDOWN=90;
-export function newAbilityClock(){return {activeUntil:0,readyAt:90,form:null,lastForm:null}};
+export function newAbilityClock(){return {activeUntil:0,readyAt:90,cooldownDuration:90,form:null,lastForm:null}};
 export function abilityPhase(clock,time){return time<clock.activeUntil?'active':time<clock.readyAt?'cooldown':'ready'}
-export function startAbility(clock,time,form=null){if(abilityPhase(clock,time)!=='ready')return false;clock.form=form;if(form)clock.lastForm=form;clock.activeUntil=time+ABILITY_DURATION;clock.readyAt=clock.activeUntil+ABILITY_COOLDOWN;return true}
-export function cooldownProgress(clock,time){if(abilityPhase(clock,time)==='active')return 1;return Math.max(0,Math.min(1,1-(clock.readyAt-time)/ABILITY_COOLDOWN))}
+export function startAbility(clock,time,form=null){if(abilityPhase(clock,time)!=='ready')return false;clock.form=form;if(form)clock.lastForm=form;clock.activeUntil=time+ABILITY_DURATION;clock.readyAt=clock.activeUntil+(clock.cooldownDuration??ABILITY_COOLDOWN);return true}
+export function cooldownProgress(clock,time){if(abilityPhase(clock,time)==='active')return 1;return Math.max(0,Math.min(1,1-(clock.readyAt-time)/(clock.cooldownDuration??ABILITY_COOLDOWN)))}
+export function setAbilityCooldown(clock,time,duration){const previous=clock.cooldownDuration??ABILITY_COOLDOWN;if(previous===duration)return;if(time<clock.activeUntil)clock.readyAt=clock.activeUntil+duration;else if(time<clock.readyAt)clock.readyAt=time+(clock.readyAt-time)*duration/previous;clock.cooldownDuration=duration}
 export function abilityModifiers(name,form,active){if(!active)return {};switch(name){case 'Amazon':return {move:.25,attackSpeed:.25,projectiles:10};case 'Druid':return form==='bear'?{damageTaken:.65,hp:2,explosion:5,staminaDrain:.3}:{attackSpeed:.5,crit:50,attack:.5,magicAttack:.5,damageTaken:1.25,killHeal:true,staminaDrain:.3};case 'Ranger':return {crit:50,evade:25,attackRange:25,attackSpeed:.25,criticalHeal:true};case 'Sorcerer':return {aura:25};case 'Warrior':return {attackSpeed:.5,attack:1,damageTaken:.5};case 'Witch':return {magicAttack:.5,attackSpeed:.25,explosion:10,killHeal:true};default:return {}}}
 export function sprintDrainMultiplier(gearReduction,abilityReduction=0){return 1-Math.min(1,Math.min(.4,Math.max(0,gearReduction)/100)+abilityReduction)}
 export function refreshDot(enemy,key,time,duration=5){const until=key+'Until',next=key+'Next';if(!(enemy[until]>time)||!Number.isFinite(enemy[next]))enemy[next]=time+.5;enemy[until]=time+duration}

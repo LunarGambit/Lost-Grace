@@ -5,7 +5,7 @@ export const classes = {
   Ranger:   {base:[150,15,5,15,10,1,15,5,15,.10], gain:[6,.2,.1,.2,.1,.005,.15], starter:'Sling'},
   Sorcerer: {base:[100,5,15,10,35,1.2,10,8,15,.10], gain:[4,.15,.3,.2,.35,.003,.1], starter:'Staff'},
   Warrior:  {base:[250,15,5,35,15,1,50,10,5,.05], gain:[10,.3,.1,.5,.15,.005,.5], starter:'BattleAxe'},
-  Witch:    {base:[100,5,15,10,35,1.2,10,5,12,.10], gain:[4,.1,.3,.1,.5,.0015,.1], starter:'Wand'}
+  Witch:    {base:[100,5,15,10,35,1.2,10,5,12,.10], gain:[4,.1,.3,.1,.5,.0015,.1], starter:'Wand', offhand:'WitchesTalisman'}
 };
 export function classStats(name, level=1) {
   const c=classes[name]||classes.Ranger, n=Math.max(0,Math.min(99,level-1));

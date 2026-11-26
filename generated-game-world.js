@@ -54,7 +54,7 @@ function buildGeometry(){
 function asset(name,height){const obj=clone(assetData[name].scene),box=new THREE.Box3().setFromObject(obj),dim=box.getSize(new THREE.Vector3()),k=height/Math.max(dim.y,.01);obj.scale.multiplyScalar(k);obj.updateMatrixWorld(true);box.setFromObject(obj);const mid=box.getCenter(new THREE.Vector3());obj.position.sub(new THREE.Vector3(mid.x,box.min.y,mid.z));const anchor=new THREE.Group();anchor.add(obj);return anchor}
 function chooseLandmarks(){
  const candidates=[];for(let z=0;z<N;z++)for(let x=0;x<N;x++){if(ramps.some(r=>rampUsesCell(r,x,z)))continue;const px=cellMin(x)+CELL/2,pz=cellMin(z)+CELL/2,region=[Math.floor(x/5),Math.floor(z/5)];candidates.push({x,z,px,pz,region})}candidates.sort(()=>rand()-.5);
- const specs=[['circle',19.5,70],['tower',75,40],['tower',75,40],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30]],chosen=[];let attempts=0;
+ const specs=[['circle',19.5,70],['tower',75,40],['tower',75,40],['tower',75,40],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30],['ruin',19.5,30]],chosen=[];let attempts=0;
  function fits(c,name,radius){if(Math.abs(c.px)+radius>HALF-20||Math.abs(c.pz)+radius>HALF-20||Math.hypot(c.px-35,c.pz-35)<radius+5)return false;
   if(chosen.some(v=>Math.hypot(c.px-v.px,c.pz-v.pz)<Math.max(50,radius+v.radius+2)))return false;
   if(name==='tower'&&chosen.some(v=>v.name==='tower'&&Math.abs(c.region[0]-v.region[0])<=1&&Math.abs(c.region[1]-v.region[1])<=1))return false;
@@ -68,7 +68,7 @@ function placeAssets(landmarks){
  const placements={landmarks:landmarks.map(v=>({name:v.name,x:v.px,z:v.pz,region:v.region,radius:v.radius})),fruit:[],obelisks:[],piles:[],chests:[],scenery:[]};
  for(const v of landmarks){const obj=asset(v.name,v.height);obj.position.add(new THREE.Vector3(v.px,heightAt(v.px,v.pz)-(v.name==='tower'?6:v.name==='circle'?2.5:v.name==='ruin'?1:0),v.pz));obj.rotation.y=rand()*Math.PI*2;obj.name='landmark-'+v.name;mapGroup.add(obj)}
  const available=[];for(let z=0;z<N;z++)for(let x=0;x<N;x++){const px=cellMin(x)+CELL/2,pz=cellMin(z)+CELL/2;if(ramps.some(r=>rampUsesCell(r,x,z))||Math.hypot(px-35,pz-35)<25||landmarks.some(v=>Math.hypot(px-v.px,pz-v.pz)<v.radius+15))continue;available.push({x,z,region:Math.floor(z/5)*3+Math.floor(x/5)})}available.sort(()=>rand()-.5);
- const counts={trees:0,bushes:0,rocks:0,circle:1,ruins:4,towers:2};
+ const counts={trees:0,bushes:0,rocks:0,circle:1,ruins:4,towers:3};
  // Use horizontal model footprints plus five clear units, not only center points.
  const radiusCache=new Map();function assetRadius(name,height){const key=name+':'+height;if(!radiusCache.has(key)){const obj=asset(name,height),size=new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());radiusCache.set(key,Math.hypot(size.x,size.z)/2)}return radiusCache.get(key)}
  const used=landmarks.map(v=>[v.px,v.pz,v.radius]);

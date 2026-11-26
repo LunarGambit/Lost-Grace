@@ -3,7 +3,9 @@ export function ordinaryEnemyHealth(seconds){
   const minutes=Math.max(0,seconds)/60;
   const baseline=12*(1+.16*minutes+.012*minutes*minutes),atTen=12*(1+.16*10+.012*100);
   const atFortyFive=12*(1+.16*45+.012*45*45);
-  return baseline+Math.max(0,baseline-atTen)+2*Math.max(0,baseline-atFortyFive);
+  const health=baseline+Math.max(0,baseline-atTen)+2*Math.max(0,baseline-atFortyFive);
+  const lateMultiplier=1+9*Math.min(1,Math.max(0,(minutes-30)/15));
+  return health*lateMultiplier;
 }
 
 // Keep the existing damage pace, but interpolate between minute marks.

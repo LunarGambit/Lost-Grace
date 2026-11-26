@@ -18,7 +18,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   assert.equal(enemyDamageMultiplier(300),1);assert.equal(enemyDamageMultiplier(360),1.15);assert.equal(enemyDamageMultiplier(330),1.075);
   assert.equal(enemySpeedMultiplier(0),1);assert.equal(enemySpeedMultiplier(3600),1.3);assert.equal(enemySpeedMultiplier(7200),1.3);
   for(let t=1;t<=7200;t+=37){assert.ok(ordinaryEnemyHealth(t)>ordinaryEnemyHealth(t-1));assert.ok(enemySpeedMultiplier(t)>=enemySpeedMultiplier(t-1))}
-  const hp45=ordinaryEnemyHealth(2700),hp44=ordinaryEnemyHealth(2640),hp46=ordinaryEnemyHealth(2760);assert.ok(Math.abs(ordinaryEnemyHealth(2700.001)-hp45)<.01);assert.ok(Math.abs((hp46-hp45)-2*(12*(1+.16*46+.012*46*46)-12*(1+.16*45+.012*45*45))*2)<1e-8);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2760)-ordinaryEnemyDamageMultiplier(2700)-.6)<1e-9);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2700)-ordinaryEnemyDamageMultiplier(2640)-.3)<1e-9);
+  const hp45=ordinaryEnemyHealth(2700),hp44=ordinaryEnemyHealth(2640),hp46=ordinaryEnemyHealth(2760);assert.ok(Math.abs(hp45-7344)<1e-8);assert.ok(Math.abs(ordinaryEnemyHealth(1800)-352.8)<1e-8);assert.ok(ordinaryEnemyHealth(2250)>ordinaryEnemyHealth(1800));assert.ok(Math.abs(ordinaryEnemyHealth(2700.001)-hp45)<.01);assert.ok(Math.abs((hp46-hp45)-20*(12*(1+.16*46+.012*46*46)-12*(1+.16*45+.012*45*45))*2)<1e-8);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2760)-ordinaryEnemyDamageMultiplier(2700)-.6)<1e-9);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2700)-ordinaryEnemyDamageMultiplier(2640)-.3)<1e-9);
   let attachments=fs.readFileSync(root+'/equipment-attachments.js','utf8')
     .replace("import * as THREE from 'three';",'const THREE={};')
     .replace("import {loadStaticModel} from './new-model-loader.js';",'const loadStaticModel=()=>{};');
@@ -44,7 +44,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   const first=foe(),second=foe();combatCtx.contactAttack(first,contacts);combatCtx.contactAttack(second,contacts);combatCtx.contactAttack(first,contacts);assert.equal(fighter.hp,80);assert.equal(first.hitCooldown,.25);assert.equal(second.hitCooldown,.25);
   combatCtx.gearStats=()=>({defense:0,magicDefense:8000,evade:0,block:0});fighter.hp=100;const magical=foe();magical.damageType='magic';combatCtx.contactAttack(magical,contacts);assert.equal(fighter.hp,97);fighter.hp=100;const physical=foe();physical.damageType='physical';combatCtx.contactAttack(physical,contacts);assert.equal(fighter.hp,90);
   for(const [tier,weight] of Object.entries({white:70,blue:15,purple:6,gold:1.5}))assert.ok(Math.abs(chestWeights(0)[tier]-100*weight/92.5)<1e-10);
-  const luck=chestWeights(100);assert.ok(Math.abs(luck.white-62.4)<.1);assert.ok(Math.abs(luck.gold-4.7)<.1);
+  assert.ok(Math.abs(chestWeights(350).gold-8)<.01);assert.ok(Math.abs(chestWeights(500).gold-15)<.01);assert.ok(Math.abs(chestWeights(1000).gold-32.692)<.01);
   for(const n of [0,25,100,200,500,1000,2000]){const weights=chestWeights(n);assert.ok(Math.abs(Object.values(weights).reduce((sum,x)=>sum+x,0)-100)<1e-8);assert.ok(Object.values(weights).every(x=>x>=0))}
   assert.deepStrictEqual(chestWeights(2000),chestWeights(1000));
   for(const [id] of newItems){assert.ok(itemChart[id],id);assert.ok(fs.existsSync(root+'/assets/chest-items/'+id+'.png'),id)}
