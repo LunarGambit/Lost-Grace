@@ -113,8 +113,10 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
 
   const equipped={equipModel:'Wand',rarity:'common',slot:'weapon',innates:[],affixes:{},magical:true};
   const statsCtx={innateProjectileCount:()=>0,shieldBlockChances:{},magicOffhandChances:{},applyCrossStats:(role,stats)=>stats,gearStatsCache:{},currentAbility:()=>({}),playerClassStats:()=>classStats('Witch',1),loadout:{ranged:{weapon:'wand'}},gearCatalog:{wand:equipped},rarityTiers:[{id:'common'}],rarityBonus,gearValues,convertAttackStats,modelForItem:item=>item?.equipModel||null,prototypeInnateDefs:{},prototypeRollDefs:{},namedArmorEffects:[],itemCount:()=>0,killBonus:()=>0,counterStacks:0,adaptationStacks:0,isPlayerAirborne:()=>false,progressionLevel:1,isMagicWeapon:item=>!!item?.magical};
-  vm.createContext(statsCtx);vm.runInContext(between('function gearStats(role){','function syncGearHealth()'),statsCtx);
+  statsCtx.collectibleCounts=Object.fromEntries(['totem','snake','salamander','spider','squirrel','rabbit','mushroom','monkey','raven','turtle','scorpion','wasp'].map(k=>[k,0]));vm.createContext(statsCtx);vm.runInContext(between('function gearStats(role){','function syncGearHealth()'),statsCtx);
   assert.ok(Math.abs(statsCtx.weaponAttackPower()-31.5)<1e-8);assert.equal(statsCtx.gearStats('ranged').evade,10);
+  const collectibleBaseline={...statsCtx.gearStats('ranged')};for(const [key,fields] of Object.entries({totem:['defense','magicDefense'],snake:['attackSpeed'],salamander:['attack'],spider:['magicAttack'],squirrel:['moveSpeed'],mushroom:['hp'],monkey:['pickupRange'],raven:['evade'],turtle:['block'],scorpion:['statusChance'],wasp:['statusDamage']})){statsCtx.collectibleCounts[key]=1;statsCtx.gearStatsCache={};const after=statsCtx.gearStats('ranged');for(const field of fields)assert.ok(after[field]>(collectibleBaseline[field]||0),key+' '+field);statsCtx.collectibleCounts[key]=0}statsCtx.gearStatsCache={};
+
   equipped.magical=false;assert.ok(Math.abs(statsCtx.weaponAttackPower()-5.25)<1e-8);
   statsCtx.itemCount=id=>id==='light-conversion'?1:0;statsCtx.gearStatsCache={};
   assert.ok(Math.abs(statsCtx.weaponAttackPower()-2.625)<1e-8);
