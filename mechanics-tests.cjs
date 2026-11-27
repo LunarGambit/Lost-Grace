@@ -16,7 +16,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   const {ordinaryEnemyHealth,enemyDamageMultiplier,ordinaryEnemyDamageMultiplier,ordinarySpawnScale,enemySpeedMultiplier}=await loadModule(root+'/enemy-scaling.js');
   for(const [minutes,hp] of [[0,12],[5,25.2],[10,45.6],[20,170.4],[30,352.8]])assert.ok(Math.abs(ordinaryEnemyHealth(minutes*60)-hp)<1e-8);
   assert.equal(enemyDamageMultiplier(300),1);assert.equal(enemyDamageMultiplier(360),1.15);assert.equal(enemyDamageMultiplier(330),1.075);
-  assert.equal(enemySpeedMultiplier(0),1);assert.equal(enemySpeedMultiplier(3600),1.3);assert.equal(enemySpeedMultiplier(7200),1.3);
+  assert.equal(enemySpeedMultiplier(0),1);assert.equal(enemySpeedMultiplier(3600),1.3);assert.equal(enemySpeedMultiplier(5400),1.3);assert.ok(Math.abs(enemySpeedMultiplier(5460)-1.365)<1e-9);assert.ok(Math.abs(enemySpeedMultiplier(7200)-3.25)<1e-9);
   for(let t=1;t<=7200;t+=37){assert.ok(ordinaryEnemyHealth(t)>ordinaryEnemyHealth(t-1));assert.ok(enemySpeedMultiplier(t)>=enemySpeedMultiplier(t-1))}
   const hp45=ordinaryEnemyHealth(2700),hp44=ordinaryEnemyHealth(2640),hp46=ordinaryEnemyHealth(2760);assert.ok(Math.abs(hp45-7344)<1e-8);assert.ok(Math.abs(ordinaryEnemyHealth(1800)-352.8)<1e-8);assert.ok(ordinaryEnemyHealth(2250)>ordinaryEnemyHealth(1800));assert.ok(Math.abs(ordinaryEnemyHealth(2700.001)-hp45)<.01);assert.ok(Math.abs((hp46-hp45)-20*(12*(1+.16*46+.012*46*46)-12*(1+.16*45+.012*45*45))*2)<1e-8);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2760)-ordinaryEnemyDamageMultiplier(2700)-.6)<1e-9);assert.ok(Math.abs(ordinaryEnemyDamageMultiplier(2700)-ordinaryEnemyDamageMultiplier(2640)-.3)<1e-9);
   let attachments=fs.readFileSync(root+'/equipment-attachments.js','utf8')
@@ -64,7 +64,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   }
   for(const weapon of ['Cudgel','HandAxe','BattleAxe','Spear','Hammer','WalkingStick']){
     assert.equal(fitCtx.affixFitsItem('projectiles',{slot:'weapon',equipModel:weapon}),false);
-    assert.equal(fitCtx.affixFitsItem('targets',{slot:'weapon',equipModel:weapon}),weapon==='Cudgel');
+    assert.equal(fitCtx.affixFitsItem('targets',{slot:'weapon',equipModel:weapon}),false);
   }
   assert.equal(fitCtx.affixFitsItem('projectiles',{slot:'gloves'}),true);
   for(const key of ['hp','attackSpeed','crit','pickupRange','attackRange','stamina','attack','defense','moveSpeed','regen','healing','buffDuration','graceGain'])assert.equal(fitCtx.affixFitsItem(key,{slot:'weapon',equipModel:'Bow'}),true,key);
@@ -112,7 +112,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   for(const weapon of ['Bow','Crossbow']){const a={slot:'weapon',rarity:'mythic',equipModel:weapon},b={slot:'weapon',rarity:'holy',equipModel:weapon};innateCtx.fillInnates(a);innateCtx.fillInnates(b);assert.equal(a.innates.length,2);assert.equal(b.innates.length,3)}
 
   const equipped={equipModel:'Wand',rarity:'common',slot:'weapon',innates:[],affixes:{},magical:true};
-  const statsCtx={shieldBlockChances:{},magicOffhandChances:{},applyCrossStats:(role,stats)=>stats,gearStatsCache:{},currentAbility:()=>({}),playerClassStats:()=>classStats('Witch',1),loadout:{ranged:{weapon:'wand'}},gearCatalog:{wand:equipped},rarityTiers:[{id:'common'}],rarityBonus,gearValues,convertAttackStats,modelForItem:item=>item?.equipModel||null,prototypeInnateDefs:{},prototypeRollDefs:{},namedArmorEffects:[],itemCount:()=>0,killBonus:()=>0,counterStacks:0,adaptationStacks:0,isPlayerAirborne:()=>false,progressionLevel:1,isMagicWeapon:item=>!!item?.magical};
+  const statsCtx={innateProjectileCount:()=>0,shieldBlockChances:{},magicOffhandChances:{},applyCrossStats:(role,stats)=>stats,gearStatsCache:{},currentAbility:()=>({}),playerClassStats:()=>classStats('Witch',1),loadout:{ranged:{weapon:'wand'}},gearCatalog:{wand:equipped},rarityTiers:[{id:'common'}],rarityBonus,gearValues,convertAttackStats,modelForItem:item=>item?.equipModel||null,prototypeInnateDefs:{},prototypeRollDefs:{},namedArmorEffects:[],itemCount:()=>0,killBonus:()=>0,counterStacks:0,adaptationStacks:0,isPlayerAirborne:()=>false,progressionLevel:1,isMagicWeapon:item=>!!item?.magical};
   vm.createContext(statsCtx);vm.runInContext(between('function gearStats(role){','function syncGearHealth()'),statsCtx);
   assert.ok(Math.abs(statsCtx.weaponAttackPower()-31.5)<1e-8);assert.equal(statsCtx.gearStats('ranged').evade,10);
   equipped.magical=false;assert.ok(Math.abs(statsCtx.weaponAttackPower()-5.25)<1e-8);
@@ -145,7 +145,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   statusCtx.elapsed=10.6;statusCtx.procEnemyEffects(statusEnemy);assert.equal(statusEnemy.freezeUntil,10.5);
   const dotEnemy={hp:100,maxHp:100,burnUntil:15,poisonUntil:13,burnNext:10.5,poisonNext:10.5};
   const tickCtx={unstoppableDamageMultiplier:()=>1,elapsed:11,adaptationStacks:0,counterStacks:0,wolves:[dotEnemy],homingMissiles:[],testEnemiesProtected:false,drainDotTicks,gearStats:()=>({magicAttack:0}),killEnemy(){},itemCount:()=>0};
-  vm.createContext(tickCtx);vm.runInContext(between('function tickCombatItems(dt){','function launchUnstableMissiles('),tickCtx);tickCtx.tickCombatItems(1);assert.equal(dotEnemy.hp,96);
+  vm.createContext(tickCtx);vm.runInContext(between('function tickCombatItems(dt){','function applyRuneStatus('),tickCtx);tickCtx.tickCombatItems(1);assert.equal(dotEnemy.hp,96);
   const spawnCode=between('function spawnEnemy(){','function spawnRaidElite(');
   class Object3D{constructor(){this.position={set(){}}}}
   for(const [random,index] of [[.1,1],[.4,5],[.9,6]]){
@@ -155,7 +155,7 @@ const loadModule = async path => import('data:text/javascript;base64,'+fs.readFi
   const mdefCounts={};statsCtx.itemCount=id=>mdefCounts[id]||0;statsCtx.killBonus=id=>id==='graveplate'&&mdefCounts.graveplate?50:0;statsCtx.adaptationStacks=0;const getMdef=()=>{statsCtx.gearStatsCache={};return statsCtx.gearStats('ranged').magicDefense};const baseMdef=getMdef();mdefCounts.ironbark=2;assert.ok(Math.abs(getMdef()-baseMdef*1.1)<1e-8);mdefCounts.graveplate=1;assert.ok(Math.abs(getMdef()-baseMdef*1.6)<1e-8);mdefCounts.adaptation=2;statsCtx.adaptationStacks=10;assert.ok(Math.abs(getMdef()-(baseMdef*1.6+20))<1e-8);mdefCounts['titans-might']=1;assert.equal(getMdef(),0);
   assert.equal(fitCtx.affixFitsItem('magicAttack',{slot:'weapon',equipModel:'Wand'}),true);
   const spellCounts={};statsCtx.itemCount=id=>spellCounts[id]||0;statsCtx.killBonus=id=>id==='bloodied-fang'&&spellCounts[id]?50:0;statsCtx.gearStatsCache={};statsCtx.prototypeInnateDefs={magicAttack:{holy:25}};statsCtx.namedArmorEffects=['magicAttack'];equipped.innates=[];equipped.namedBonus=undefined;const magicBase=statsCtx.gearStats('ranged').magicAttack;spellCounts['bloodied-fang']=1;spellCounts['titans-might']=1;statsCtx.gearStatsCache={};assert.ok(Math.abs(statsCtx.gearStats('ranged').magicAttack-magicBase*2.5)<1e-8);equipped.innates=['magicAttack'];equipped.rarity='holy';equipped.namedBonus=0;statsCtx.rarityTiers=[{id:'common'},{id:'uncommon'},{id:'rare'},{id:'mythic'},{id:'holy'}];statsCtx.gearStatsCache={};assert.ok(Math.abs(statsCtx.gearStats('ranged').magicAttack-30*1.15*2.9)<1e-8);
-  const fanFormula=html.match(/bonus=(1\+Math\.max\(0,extra-19\)\*\.[0-9]+)/);assert.ok(fanFormula);for(let extra=0;extra<=100;extra++){const multiplier=vm.runInNewContext(fanFormula[1],{Math,extra});assert.ok(Math.abs(Math.min(20,1+extra)*multiplier-(1+extra))<1e-9)}
+  for(let extra=0;extra<=100;extra++){const multiplier=fitCtx.projectileOverflowBonus(extra);assert.ok(Math.abs(Math.min(20,1+extra)*multiplier-(1+extra))<1e-9)}
   assert.deepStrictEqual(itemChart.pestilence,['blue',10]);
   const spreadCode=between('function spreadPestilence(', 'function killEnemy('),near={hp:100,outer:{position:{distanceToSquared:()=>25}}},far={hp:100,outer:{position:{distanceToSquared:()=>121}}},immune={hp:100,freezeImmuneUntil:11,outer:{position:{distanceToSquared:()=>1}}},victim={hp:0,burnUntil:14,freezeUntil:10.4,poisonUntil:12,shockUntil:13,deadlyPoisonUntil:14,sorcererBurnUntil:14,outer:{position:{}}},spreadCtx={elapsed:10,itemCount:id=>id==='pestilence'?10:0,Math:{random:()=>0,min:Math.min,max:Math.max},nearbyEnemies:()=>[victim,near,far,immune],applyBurn:(target,duration,rate)=>{target.burnUntil=10+duration;target.burnRate=rate},refreshDot:(target,key,time,duration)=>{target[key+'Until']=time+duration;target[key+'Next']=time+.5}};vm.createContext(spreadCtx);vm.runInContext(spreadCode,spreadCtx);spreadCtx.spreadPestilence(victim);for(const key of ['burn','freeze','poison','shock','deadlyPoison','sorcererBurn'])assert.equal(near[key+'Until'],victim[key+'Until'],key);assert.equal(far.burnUntil,undefined);assert.equal(immune.freezeUntil,undefined);
   assert.deepStrictEqual(itemChart.plauge,['purple',5]);

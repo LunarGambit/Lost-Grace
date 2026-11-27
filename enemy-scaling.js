@@ -13,9 +13,9 @@ export function enemyDamageMultiplier(seconds){
   return 1+.15*Math.max(0,seconds-300)/60;
 }
 
-// A gradual increase with an upper bound, independent of player level.
+// Existing speed growth through 90 minutes, then +5% of the 90-minute speed per minute.
 export function enemySpeedMultiplier(seconds){
-  return 1+Math.min(.3,.005*Math.max(0,seconds)/60);
+  return (1+Math.min(.3,.005*Math.max(0,seconds)/60))*(1+.05*Math.max(0,seconds-5400)/60);
 }
 
 // From ten minutes onward ordinary enemy damage grows at twice its earlier rate.

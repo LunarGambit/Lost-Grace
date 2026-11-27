@@ -53,7 +53,7 @@ export const newItems=[
  ['rabbits-foot',"Rabbit's Foot",'+50 Luck per copy'],['soul-wisp','Soul Wisp','+5% magic attack per copy'],
  ['sharp-claws','Sharp Claws','Heal 0.5 HP per melee hit per copy'],['soul-siphon','Soul Siphon','Heal 0.5 HP per ranged hit per copy'],
  ['timeless-hourglass','Timeless Hourglass','Combat items trigger one additional time'],
- ['unstable-grace','Unstable Grace','Ranged hits launch one homing missile per copy at another enemy'],
+ ['unstable-grace','Unstable Grace','Projectile hits charge a halo with one homing missile per copy. The halo fires at the closest enemy in ranged attack range.'],
  ['pyrotechnics','Pyrotechnics','Magical attacks have a 5% chance per copy to burn for 3% maximum HP per second for 3 seconds, plus 10% MATK per half-second tick'],
  ['permafrost','Permafrost','Magical attacks have a 5% chance per copy to freeze for 0.5 seconds, with duration increased by 0.1% per MATK'],
  ['energy-of-the-gods','Energy of the Gods','Magical attacks have a 5% chance per copy to shock nearby enemies, slowing them 15% for 3 seconds, with duration increased by 0.1% per MATK'],
