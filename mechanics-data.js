@@ -14,9 +14,9 @@ export function classStats(name, level=1) {
 }
 // [attack, magic attack, defense, magic defense], before rarity bonuses.
 export const gearValues={
- BattleAxe:[25,10,5,5],Bow:[10,10,0,0],Crossbow:[15,5,0,0],Sling:[0,0,0,0],
- Cudgel:[10,5,0,0],Hammer:[25,10,5,5],HandAxe:[10,5,0,0],Spear:[25,5,5,5],
- Javelin:[5,10,0,0],Staff:[0,15,0,0],WalkingStick:[20,20,0,0],Wand:[0,15,0,0],VoodooDoll:[10,20,0,0],ThrowingKnives:[10,10,0,0],
+ BattleAxe:[0,0,0,0],Bow:[0,0,0,0],Crossbow:[0,0,0,0],Sling:[0,0,0,0],
+ Cudgel:[0,0,0,0],Hammer:[0,0,0,0],HandAxe:[0,0,0,0],Spear:[0,0,0,0],
+ Javelin:[0,0,0,0],Staff:[0,0,0,0],WalkingStick:[0,0,0,0],Wand:[0,0,0,0],VoodooDoll:[0,0,0,0],ThrowingKnives:[0,0,0,0],
  WoodShield:[5,5,10,5],StoneShield:[5,5,25,10],BoneShield:[10,10,50,35],
  WitchesTalisman:[0,10,5,5],SoulStone:[0,5,10,10],ShrunkenHead:[0,0,15,15],SpiritFocus:[0,15,25,25],Pouch:[5,5,0,0],Quiver:[10,10,0,0]
 };
