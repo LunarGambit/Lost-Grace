@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lost-grace",
+  "account_id": "1987839c205a15029dca97c16b724637",
+  "compatibility_date": "2026-11-27",
+  "workers_dev": true,
+  "assets": { "directory": "." },
+  "observability": { "enabled": true }
+}

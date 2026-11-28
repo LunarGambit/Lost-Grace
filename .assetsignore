@@ -1,0 +1,16 @@
+.git/
+.github/
+node_modules/
+.wrangler/
+*.cjs
+*-tests.mjs
+*.py
+*.md
+package.json
+package-lock.json
+wrangler.jsonc
+map-asset-test/
+
+*-before-*.obj
+*-previous-*.obj
+*-maya-*.obj

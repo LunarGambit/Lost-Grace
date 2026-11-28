@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {WaveCheckpoint} from './wave-checkpoint.js';
+const checkpoint=new WaveCheckpoint();
+const before={items:{'golden-cup':2,coinpurse:1},gear:{weapon:{affixes:{attack:1}}},gold:100,xp:75,kills:10};
+checkpoint.capture(before);before.items.coinpurse=5;before.gear.weapon.affixes.attack=5;
+let restored=checkpoint.consume();assert.equal(restored.items['golden-cup'],1);assert.equal(restored.items.coinpurse,1);assert.equal(restored.gear.weapon.affixes.attack,1);assert.equal(restored.gold,100);
+restored.items['golden-cup']=2;restored.gold=999;
+restored=checkpoint.consume();assert.equal(restored.items['golden-cup'],0);assert.equal(restored.gold,100);assert.equal(checkpoint.consume(),null);
+checkpoint.capture({items:{'golden-cup':0}});assert.equal(checkpoint.consume(),null);
+checkpoint.clear();assert.equal(checkpoint.available,0);
+console.log('Checkpoint isolation, cumulative consumption, and eligibility checks passed.');

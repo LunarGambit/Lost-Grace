@@ -14,3 +14,9 @@ export function weaponBonuses(name,rarity){
  const value=5*(tier+1);
  return Object.fromEntries(weaponBonusStats[name].map(stat=>[stat,value]));
 }
+
+export function offhandBonuses(name,rarity){
+ const tier=['common','uncommon','rare','mythic','holy'].indexOf(rarity)+1;
+ if(!tier)return {};
+ return name==='Pouch'?{projectiles:tier}:name==='Quiver'?{critDamage:5*tier}:{};
+}
