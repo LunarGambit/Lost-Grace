@@ -9,7 +9,6 @@ node_modules/
 package.json
 package-lock.json
 wrangler.jsonc
-map-asset-test/
 
 *-before-*.obj
 *-previous-*.obj
